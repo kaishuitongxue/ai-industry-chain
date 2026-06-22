@@ -1208,6 +1208,278 @@ toast.style.opacity = '0';
 toast.style.transform = 'translateY(10px)';
 }, 4000);
 }
+
+// ============================================
+// 新闻实时情报系统 — 时间线模式 + 7天过滤
+// ============================================
+let currentPage = 'overview';
+
+function getSectorName(sectorId) {
+  const item = industryData.find(i => i.id === sectorId);
+  return item ? item.name : sectorId;
+}
+
+function addNewsCard(title, source, date, sectorIds, sentiment, link, companies) {
+  const container = $('#newsCards');
+  if (!container) return;
+  const empty = container.querySelector('.news-empty');
+  if (empty) empty.remove();
+
+  const card = document.createElement('div');
+  card.className = 'news-card';
+  card.setAttribute('data-sector-ids', JSON.stringify(sectorIds || []));
+  card.setAttribute('data-link', link || '');
+  card.setAttribute('data-date', date);
+
+  if (link) {
+    card.style.cursor = 'pointer';
+    card.title = '点击查看原文';
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('.news-sector-tag') || e.target.closest('.news-sentiment') || e.target.closest('.news-company-tag')) return;
+      window.open(link, '_blank', 'noopener');
+    });
+  }
+
+  const layers = new Set();
+  (sectorIds || []).forEach(id => {
+    const l = getSectorLayer(id);
+    if (l) layers.add(l);
+  });
+  card.setAttribute('data-layers', JSON.stringify([...layers]));
+
+  const sentimentLabel = sentiment > 0 ? '利好' : sentiment < 0 ? '利空' : '中性';
+  const sentimentCls = sentiment > 0 ? 'positive' : sentiment < 0 ? 'negative' : 'neutral';
+  const sign = sentiment > 0 ? '+' : '';
+
+  const sectorTags = (sectorIds || []).slice(0, 3).map(id =>
+    '<span class="news-sector-tag">' + getSectorName(id) + '</span>'
+  ).join('');
+
+  const companyTags = (companies || []).map(c => {
+    const tickerSpan = c.ticker ? '<span class="news-company-ticker">' + escapeHTML(c.ticker) + '</span>' : '';
+    return '<span class="news-company-tag" title="' + escapeHTML(c.name) + (c.ticker ? ' · ' + c.ticker : '') + '">' + (c.country || '') + ' ' + escapeHTML(c.name) + tickerSpan + '</span>';
+  }).join('');
+
+  const linkIcon = link ? ' <span style="font-size:10px;opacity:0.5">🔗</span>' : '';
+
+  card.innerHTML = '<div class="news-card-header"><span class="news-source-badge">' + escapeHTML(source) + '</span><span class="news-date">' + date + '</span></div><div class="news-card-title">' + escapeHTML(title) + linkIcon + '</div><div class="news-card-footer">' + sectorTags + companyTags + '<span class="news-sentiment ' + sentimentCls + '">' + sign + sentiment.toFixed(1) + ' ' + sentimentLabel + '</span></div>';
+
+  if (currentPage !== 'overview' && currentPage !== 'ranking') {
+    if (!layers.has(currentPage)) card.style.display = 'none';
+  }
+
+  RENDERED_NEWS_TITLES.add(title);
+  container.appendChild(card);
+}
+
+// 按时间线重新组织新闻：每天一个分组，7天过滤
+function renderNewsTimeline() {
+  const container = $('#newsCards');
+  if (!container) return;
+
+  const sevenDaysAgo = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
+  const cards = [...container.querySelectorAll('.news-card')];
+
+  // 移除超过7天的卡片
+  cards.forEach(card => {
+    const d = card.getAttribute('data-date') || '';
+    if (d < sevenDaysAgo) card.remove();
+  });
+
+  // 按日期分组
+  const groups = {};
+  const remaining = [...container.querySelectorAll('.news-card')];
+  remaining.forEach(card => {
+    const d = card.getAttribute('data-date') || '';
+    if (!groups[d]) groups[d] = [];
+    groups[d].push(card);
+  });
+
+  // 清空容器
+  container.innerHTML = '';
+
+  // 日期降序排列，每天内按原始顺序
+  const sortedDates = Object.keys(groups).sort((a, b) => b.localeCompare(a));
+  const today = new Date().toISOString().slice(0, 10);
+  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+
+  sortedDates.forEach(date => {
+    // 日期标签
+    let dateLabel = date;
+    if (date === today) dateLabel = '📅 今天 · ' + date;
+    else if (date === yesterday) dateLabel = '📅 昨天 · ' + date;
+    else {
+      const d = new Date(date);
+      const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+      dateLabel = '📅 ' + weekdays[d.getDay()] + ' · ' + date;
+    }
+
+    const header = document.createElement('div');
+    header.className = 'news-timeline-header';
+    header.innerHTML = '<span>' + dateLabel + '</span><span style="color:var(--text-muted);font-size:11px">' + groups[date].length + ' 条</span>';
+    container.appendChild(header);
+
+    // 该日期的卡片
+    groups[date].forEach(card => container.appendChild(card));
+  });
+
+  // 更新统计
+  const totalCards = Object.values(groups).reduce((s, g) => s + g.length, 0);
+  const statsEl = $('#newsStatsCount');
+  if (statsEl) statsEl.textContent = totalCards;
+  const daysEl = $('#newsStatsDays');
+  if (daysEl) daysEl.textContent = sortedDates.length;
+}
+
+// 新闻层级过滤（适配时间线）
+function filterNewsByLayer(layer) {
+  currentPage = layer;
+  const container = $('#newsCards');
+  if (!container) return;
+
+  const allCards = [...container.querySelectorAll('.news-card')];
+  const allHeaders = [...container.querySelectorAll('.news-timeline-header')];
+
+  if (layer === 'all' || layer === 'news' || layer === 'overview' || layer === 'ranking') {
+    allCards.forEach(c => c.style.display = '');
+    allHeaders.forEach(h => h.style.display = '');
+  } else {
+    allCards.forEach(card => {
+      try {
+        const layers = JSON.parse(card.getAttribute('data-layers') || '[]');
+        card.style.display = layers.includes(layer) ? '' : 'none';
+      } catch (e) { card.style.display = ''; }
+    });
+    // 隐藏空的日期分组标题
+    allHeaders.forEach(header => {
+      let next = header.nextElementSibling;
+      let hasVisible = false;
+      while (next && !next.classList.contains('news-timeline-header')) {
+        if (next.style.display !== 'none') { hasVisible = true; break; }
+        next = next.nextElementSibling;
+      }
+      header.style.display = hasVisible ? '' : 'none';
+    });
+  }
+}
+
+function sortNewsByDate() {
+  renderNewsTimeline();
+}
+
+// 清理过期缓存
+function cleanOldNewsCache() {
+  const cached = loadNewsCache();
+  if (!cached) return;
+  const sevenDaysAgo = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
+  const fresh = cached.filter(n => n.date >= sevenDaysAgo);
+  if (fresh.length < cached.length) saveNewsCache(fresh);
+}
+
+// 应用一条真实新闻
+function applyRealNews(newsItem) {
+  newsItem.sectorIds.forEach(sectorId => {
+    const item = industryData.find(i => i.id === sectorId);
+    if (!item) return;
+    item.newsFactors.push({
+      date: newsItem.date,
+      event: '[' + newsItem.source + '] ' + newsItem.title,
+      impact: newsItem.sentiment,
+    });
+    if (item.newsFactors.length > 10) item.newsFactors = item.newsFactors.slice(-10);
+    const newsImpact = item.newsFactors.reduce((s, nf) => s + nf.impact, 0);
+    item.scarcity = Math.min(10, Math.max(1, +(9.0 + newsImpact * 0.5).toFixed(1)));
+    item.value = Math.min(10, Math.max(1, +(9.0 + newsImpact * 0.3).toFixed(1)));
+    item.composite = +(item.scarcity * 0.4 + item.value * 0.35 + item.barrier * 0.25).toFixed(1);
+  });
+  addNewsCard(newsItem.title, newsItem.source, newsItem.date, newsItem.sectorIds, newsItem.sentiment, newsItem.link || '', newsItem.companies || []);
+  if (newsItem.sentiment !== 0) {
+    showToast('📡 ' + (newsItem.sentiment > 0 ? '利好' : '利空') + '：' + newsItem.title.slice(0, 30) + '... (' + (newsItem.sentiment > 0 ? '+' : '') + newsItem.sentiment.toFixed(1) + ')');
+  }
+}
+
+async function runRealNewsCycle(forceRefresh) {
+  if (!_prefetchedNews && !forceRefresh) {
+    try {
+      _prefetchedNews = await fetchAllRealNews();
+      if (_prefetchedNews && _prefetchedNews.length > 0) saveNewsCache(_prefetchedNews);
+    } catch(e) {}
+  }
+  if (!forceRefresh && _prefetchedNews && _prefetchedNews.length > 0) {
+    console.log('📡 预抓取就绪，' + _prefetchedNews.length + ' 条新闻即时加载');
+    _prefetchedNews.forEach(function(news) { RENDERED_NEWS_TITLES.add(news.title); applyRealNews(news); });
+    _prefetchedNews = null;
+    renderNewsTimeline();
+    refreshAll();
+    refreshNewsInBackground();
+    return;
+  }
+  if (!forceRefresh) {
+    const cached = loadNewsCache();
+    if (cached && cached.length > 0) {
+      cleanOldNewsCache();
+      console.log('📡 从缓存加载 ' + cached.length + ' 条新闻');
+      cached.forEach(function(news) { RENDERED_NEWS_TITLES.add(news.title); applyRealNews(news); });
+      renderNewsTimeline();
+      refreshAll();
+      refreshNewsInBackground();
+      return;
+    }
+  }
+  const allNews = await fetchAllRealNews();
+  if (allNews.length === 0) { runFallbackSim(); return; }
+  saveNewsCache(allNews);
+  allNews.forEach(function(news) { RENDERED_NEWS_TITLES.add(news.title); applyRealNews(news); });
+  renderNewsTimeline();
+  refreshAll();
+}
+
+async function refreshNewsInBackground() {
+  try {
+    const allNews = await fetchAllRealNews();
+    if (allNews.length === 0) return;
+    saveNewsCache(allNews);
+    let newCount = 0;
+    for (var i = 0; i < allNews.length; i++) {
+      if (RENDERED_NEWS_TITLES.has(allNews[i].title)) continue;
+      RENDERED_NEWS_TITLES.add(allNews[i].title);
+      applyRealNews(allNews[i]);
+      newCount++;
+      if (newCount >= 10) break;
+    }
+    if (newCount > 0) {
+      renderNewsTimeline();
+      refreshAll();
+      var timeStr = new Date().toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      showToast('📡 ' + timeStr + ' 更新 ' + newCount + ' 条AI情报');
+    }
+    var updateEl = $('#newsUpdateTime');
+    if (updateEl) updateEl.textContent = new Date().toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit'});
+  } catch (e) {}
+}
+
+function runFallbackSim() {
+  var item = industryData[Math.floor(Math.random() * industryData.length)];
+  var impact = +(0.2 + Math.random() * 0.3).toFixed(1);
+  item.newsFactors.push({ date: new Date().toISOString().slice(0, 10), event: '[行业动态] ' + item.name + '赛道持续活跃', impact: impact });
+  if (item.newsFactors.length > 10) item.newsFactors = item.newsFactors.slice(-10);
+  var ni = item.newsFactors.reduce(function(s, nf) { return s + nf.impact; }, 0);
+  item.scarcity = Math.min(10, Math.max(1, +(9.0 + ni * 0.5).toFixed(1)));
+  item.value = Math.min(10, Math.max(1, +(9.0 + ni * 0.3).toFixed(1)));
+  item.composite = +(item.scarcity * 0.4 + item.value * 0.35 + item.barrier * 0.25).toFixed(1);
+  addNewsCard('[行业动态] ' + item.name + '赛道持续活跃', '行业动态', new Date().toISOString().slice(0, 10), [item.id], impact, '', []);
+  renderNewsTimeline();
+  refreshAll();
+}
+
+function startRealNewsFeed() {
+  setTimeout(function() { runRealNewsCycle(); }, 2000);
+  setInterval(function() { refreshNewsInBackground(); }, 60 * 1000);
+}
+
+window.updateFilterTags = updateFilterTags;
+window.filterNewsByLayer = filterNewsByLayer;
+
 function refreshAll() {
 renderOverview();
 renderDashboard();
