@@ -767,11 +767,11 @@ const RSS_SOURCES = [
 { url: 'https://36kr.com/feed', label: '36氪' },
 { url: 'https://sspai.com/feed', label: '少数派' },
 { url: 'https://www.ithome.com/rss/', label: 'IT之家' },
-{ url: 'https://news.google.com/rss/search?q=%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD+AI+%E5%A4%A7%E6%A8%A1%E5%9E%8B&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google 综合AI' },
-{ url: 'https://news.google.com/rss/search?q=AI%E8%8A%AF%E7%89%87+%E6%99%BA%E8%83%BD%E9%A9%BE%E9%A9%B6+%E6%9C%BA%E5%99%A8%E4%BA%BA&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google AI硬件' },
-{ url: 'https://news.google.com/rss/search?q=OpenAI+ChatGPT+Claude+Gemini+AI%E6%A8%A1%E5%9E%8B&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google 大模型' },
-{ url: 'https://news.google.com/rss/search?q=AI%E5%8C%BB%E7%96%97+AI%E9%87%91%E8%9E%8D+AI%E6%95%99%E8%82%B2+AIGC&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google AI应用' },
-{ url: 'https://news.google.com/rss/search?q=NVIDIA+%E8%8B%B1%E4%BC%9F%E8%BE%BE+TSMC+%E5%8F%B0%E7%A7%AF%E7%94%B5+AI&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google AI芯片' },
+{ url: 'https://news.google.com/rss/search?q=%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD+AI+%E5%A4%A7%E6%A8%A1%E5%9E%8B&hl=zh-CN&gl=CN&ceid=CN:zh-Hans&when:24h', label: 'Google 综合AI' },
+{ url: 'https://news.google.com/rss/search?q=AI%E8%8A%AF%E7%89%87+%E6%99%BA%E8%83%BD%E9%A9%BE%E9%A9%B6+%E6%9C%BA%E5%99%A8%E4%BA%BA&hl=zh-CN&gl=CN&ceid=CN:zh-Hans&when:24h', label: 'Google AI硬件' },
+{ url: 'https://news.google.com/rss/search?q=OpenAI+ChatGPT+Claude+Gemini+AI%E6%A8%A1%E5%9E%8B&hl=zh-CN&gl=CN&ceid=CN:zh-Hans&when:24h', label: 'Google 大模型' },
+{ url: 'https://news.google.com/rss/search?q=AI%E5%8C%BB%E7%96%97+AI%E9%87%91%E8%9E%8D+AI%E6%95%99%E8%82%B2+AIGC&hl=zh-CN&gl=CN&ceid=CN:zh-Hans&when:24h', label: 'Google AI应用' },
+{ url: 'https://news.google.com/rss/search?q=NVIDIA+%E8%8B%B1%E4%BC%9F%E8%BE%BE+TSMC+%E5%8F%B0%E7%A7%AF%E7%94%B5+AI&hl=zh-CN&gl=CN&ceid=CN:zh-Hans&when:24h', label: 'Google AI芯片' },
 ];
 const RESEARCH_CACHE_KEY = 'ai_research_cache_v2';
 const EM_BASE = 'https://reportapi.eastmoney.com/report/list';
