@@ -1198,6 +1198,7 @@
       console.log(`📡 预抓取就绪，${_prefetchedNews.length} 条新闻即时加载`);
       _prefetchedNews.forEach(news => applyRealNews(news));
       _prefetchedNews = null;
+      sortNewsByDate();
       refreshAll();
       refreshNewsInBackground();
       return;
@@ -1209,6 +1210,7 @@
       if (cached && cached.length > 0) {
         console.log(`📡 从缓存加载 ${cached.length} 条新闻`);
         cached.forEach(news => applyRealNews(news));
+        sortNewsByDate();
         refreshAll();
         refreshNewsInBackground();
         return;
@@ -1224,6 +1226,7 @@
     saveNewsCache(allNews);
     // 批量渲染
     allNews.forEach(news => applyRealNews(news));
+    sortNewsByDate();
     refreshAll();
   }
 
@@ -1274,6 +1277,7 @@
     card.className = 'news-card';
     card.setAttribute('data-sector-ids', JSON.stringify(sectorIds || []));
     card.setAttribute('data-link', link || '');
+    card.setAttribute('data-date', date);
 
     if (link) {
       card.style.cursor = 'pointer';
@@ -1327,7 +1331,20 @@
       }
     }
 
-    container.insertBefore(card, container.firstChild);
+    // 按日期降序插入（最新在前）
+    const existingCards = container.querySelectorAll('.news-card');
+    let inserted = false;
+    for (const existing of existingCards) {
+      const existingDate = existing.getAttribute('data-date') || '';
+      if (date >= existingDate) {
+        container.insertBefore(card, existing);
+        inserted = true;
+        break;
+      }
+    }
+    if (!inserted) {
+      container.appendChild(card);
+    }
 
     const cards = container.querySelectorAll('.news-card');
     if (cards.length > 80) {
@@ -2081,6 +2098,20 @@
     if (activeBtn) activeBtn.classList.add('active');
   }
   window.updateFilterTags = updateFilterTags;
+
+  // 强制按日期重新排序所有新闻卡片
+  function sortNewsByDate() {
+    const container = $('#newsCards');
+    if (!container) return;
+    const cards = [...container.querySelectorAll('.news-card')];
+    cards.sort((a, b) => {
+      const da = a.getAttribute('data-date') || '';
+      const db = b.getAttribute('data-date') || '';
+      return db.localeCompare(da); // 降序，最新在前
+    });
+    cards.forEach(card => container.appendChild(card));
+  }
+
   window.filterNewsByLayer = filterNewsByLayer;
 
 })();
