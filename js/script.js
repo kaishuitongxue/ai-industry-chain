@@ -845,6 +845,15 @@ const RSS_SOURCES = [
   { url: 'https://news.google.com/rss/search?q=AI%E6%95%99%E8%82%B2+AI%E5%9F%B9%E8%AE%AD+AI%E5%AD%A6%E4%B9%A0+%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google AI教育' },
   { url: 'https://news.google.com/rss/search?q=%E5%8D%8E%E4%B8%BA+%E5%AD%97%E8%8A%82+%E7%99%BE%E5%BA%A6+%E9%98%BF%E9%87%8C+%E8%85%BE%E8%AE%AF+%E7%A7%91%E5%A4%A7%E8%AE%AF%E9%A3%9E+AI%E5%B8%83%E5%B1%80&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google 大厂AI' },
   { url: 'https://news.google.com/rss/search?q=AI%E8%A1%8C%E4%B8%9A+%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E4%BA%A7%E4%B8%9A+%E6%99%BA%E8%83%BD%E5%88%B6%E9%80%A0+%E6%95%B0%E5%AD%97%E5%8C%96&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google AI产业' },
+
+  { url: 'https://news.google.com/rss/search?q=site:tech.qq.com+AI&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: '腾讯科技' },
+  { url: 'https://news.google.com/rss/search?q=site:163.com+AI+%E7%A7%91%E6%8A%80&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: '网易科技' },
+  { url: 'https://news.google.com/rss/search?q=site:tech.sina.com.cn+AI&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: '新浪科技' },
+  { url: 'https://news.google.com/rss/search?q=site:sohu.com+AI+%E7%A7%91%E6%8A%80&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: '搜狐科技' },
+  { url: 'https://news.google.com/rss/search?q=site:ifeng.com+AI+%E7%A7%91%E6%8A%80&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: '凤凰科技' },
+  { url: 'https://news.google.com/rss/search?q=site:huxiu.com+AI&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: '虎嗅' },
+  { url: 'https://news.google.com/rss/search?q=site:tmtpost.com+AI&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: '钛媒体' },
+  { url: 'https://news.google.com/rss/search?q=site:wallstreetcn.com+AI&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: '华尔街见闻' },
 ];
 
 // ============================================
