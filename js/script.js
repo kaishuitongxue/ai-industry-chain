@@ -1139,10 +1139,19 @@ async function openSectorModal(sectorId) {
 
 window.openSectorModal = openSectorModal;
 
-async function fetchEastmoneyReports(pageNo = 1) {
+async function fetchEastmoneyReports(pageNo) {
+  if (!pageNo) pageNo = 1;
   try {
-    const url = `${EM_BASE}?cb=&industryCode=*&pageSize=50&pageNo=${pageNo}&fields=title,orgName,orgSName,publishDate,stockName,stockCode,summary,infoCode&qType=0&beginTime=2026-01-01&endTime=`;
-    const resp = await fetch(url, { headers: { 'Referer': 'https://data.eastmoney.com/' } });
+    const apiUrl = EM_BASE + '?cb=&industryCode=*&pageSize=50&pageNo=' + pageNo + '&fields=title,orgName,orgSName,publishDate,stockName,stockCode,summary,infoCode&qType=0&beginTime=2026-06-01&endTime=';
+    // 双路赛跑：直连+CORS代理
+    const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(apiUrl);
+    let resp = null;
+    try {
+      resp = await fetch(apiUrl, { headers: { 'Referer': 'https://data.eastmoney.com/' } });
+      if (!resp.ok) throw new Error('direct failed');
+    } catch(e) {
+      resp = await fetch(proxyUrl);
+    }
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const data = await resp.json();
     return (data.data || []).map(r => ({
@@ -1166,10 +1175,18 @@ async function fetchEastmoneyReports(pageNo = 1) {
 }
 
 // --- 源2：同花顺研报 ---
-async function fetch10jqkaReports(pageNo = 1) {
+async function fetch10jqkaReports(pageNo) {
+  if (!pageNo) pageNo = 1;
   try {
-    const url = `https://yuanbao.10jqka.com.cn/open_api/research/reportList?page=${pageNo}&size=30&type=1`;
-    const resp = await fetch(url);
+    const apiUrl = 'https://yuanbao.10jqka.com.cn/open_api/research/reportList?page=' + pageNo + '&size=30&type=1';
+    const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(apiUrl);
+    let resp = null;
+    try {
+      resp = await fetch(apiUrl);
+      if (!resp.ok) throw new Error('direct failed');
+    } catch(e) {
+      resp = await fetch(proxyUrl);
+    }
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const data = await resp.json();
     return (data.data?.list || data.data || []).map(r => ({
@@ -1195,9 +1212,15 @@ async function fetch10jqkaReports(pageNo = 1) {
 // --- 源3：东方财富-行业研报（不同查询维度） ---
 async function fetchEMIndustryReports() {
   try {
-    const today = new Date().toISOString().slice(0, 10);
-    const url = `${EM_BASE}?cb=&industryCode=*&pageSize=30&pageNo=1&fields=title,orgName,orgSName,publishDate,stockName,stockCode,summary,infoCode&qType=1&beginTime=2026-01-01&endTime=`;
-    const resp = await fetch(url, { headers: { 'Referer': 'https://data.eastmoney.com/' } });
+    const apiUrl = EM_BASE + '?cb=&industryCode=*&pageSize=30&pageNo=1&fields=title,orgName,orgSName,publishDate,stockName,stockCode,summary,infoCode&qType=1&beginTime=2026-06-01&endTime=';
+    const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(apiUrl);
+    let resp = null;
+    try {
+      resp = await fetch(apiUrl, { headers: { 'Referer': 'https://data.eastmoney.com/' } });
+      if (!resp.ok) throw new Error('direct failed');
+    } catch(e) {
+      resp = await fetch(proxyUrl);
+    }
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const data = await resp.json();
     return (data.data || []).map(r => ({
@@ -1224,8 +1247,35 @@ async function fetchEMIndustryReports() {
 const RESEARCH_SOURCES = [
   { name: '东方财富', fetch: fetchEastmoneyReports, pages: 3 },
   { name: '东方财富-行业', fetch: fetchEMIndustryReports, pages: 1 },
-  { name: '同花顺', fetch: fetch10jqkaReports, pages: 2 },
+  { name: '同花顺', fetch: fetch10jqkaReports, pages: 1 },
 ];
+
+// Google News 研报搜索（作为RSS源补充）
+async function fetchGoogleResearchNews() {
+  try {
+    const query = encodeURIComponent('券商研报 AI 人工智能 行业深度');
+    const apiUrl = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent('https://news.google.com/rss/search?q=' + query + '&hl=zh-CN&gl=CN&ceid=CN:zh-Hans');
+    const resp = await fetch(apiUrl);
+    if (!resp.ok) return [];
+    const data = await resp.json();
+    if (data.status !== 'ok') return [];
+    return (data.items || []).map(function(item) {
+      return {
+        title: (item.title || '').replace(/<[^>]*>/g, '').trim(),
+        date: item.pubDate ? new Date(item.pubDate).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
+        source: 'Google研报',
+        link: item.link || '',
+        summary: '',
+        infoCode: '',
+        stockName: '',
+        stockCode: '',
+        ticker: null,
+      };
+    }).filter(function(r) {
+      return r.title.includes('研报') || r.title.includes('深度') || r.title.includes('报告') || r.title.includes('证券');
+    });
+  } catch(e) { return []; }
+}
 
 
 // 东方财富AI新闻爬取（通过CORS代理）
@@ -1285,6 +1335,12 @@ async function fetch10jqkaAINews() {
 async function fetchAllResearch() {
   console.log('📋 正在从多个数据源抓取券商研报...');
   const allResults = [];
+
+  // 额外：Google News 研报搜索
+  try {
+    const gNews = await fetchGoogleResearchNews();
+    if (gNews.length > 0) { console.log('  Google研报: ' + gNews.length + ' 篇'); allResults.push(...gNews); }
+  } catch(e) {}
 
   for (const src of RESEARCH_SOURCES) {
     try {
