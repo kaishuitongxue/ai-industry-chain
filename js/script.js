@@ -268,6 +268,44 @@ if (label.includes('非营利') || label.includes('未上市')) cls = 'nonprofit
 if (label.startsWith('市值')) cls = 'public';
 return `<span class="cap-badge ${cls}">💰 ${label}</span>`;
 }
+
+// 生成公司Logo（首字母彩色圆 + favicon尝试）
+function renderCompanyLogo(company) {
+  var name = company.name || '';
+  var initial = name.replace(/[\(（].*[\)）]/g, '').trim().charAt(0).toUpperCase() || '?';
+  var ticker = company.ticker || '';
+  // 为不同公司生成稳定的颜色
+  var colors = ['#ef4444','#f59e0b','#22c55e','#3b82f6','#8b5cf6','#ec4899','#06b6d4','#f97316','#6366f1','#14b8a6'];
+  var hash = 0;
+  for (var i = 0; i < name.length; i++) hash = ((hash << 5) - hash) + name.charCodeAt(i);
+  var color = colors[Math.abs(hash) % colors.length];
+  var domain = '';
+  if (ticker) {
+    if (ticker.endsWith('.SS') || ticker.endsWith('.SZ') || ticker.endsWith('.BJ')) {
+      domain = ''; // A股暂不用favicon
+    } else if (ticker === 'NVDA') domain = 'nvidia.com';
+    else if (ticker === 'AMD') domain = 'amd.com';
+    else if (ticker === 'GOOGL') domain = 'google.com';
+    else if (ticker === 'AMZN') domain = 'amazon.com';
+    else if (ticker === 'MSFT') domain = 'microsoft.com';
+    else if (ticker === 'TSLA') domain = 'tesla.com';
+    else if (ticker === 'TSM') domain = 'tsmc.com';
+    else if (ticker === 'INTC') domain = 'intel.com';
+    else if (ticker === 'ASML') domain = 'asml.com';
+    else if (ticker === 'BABA') domain = 'alibaba.com';
+    else if (ticker === 'BIDU') domain = 'baidu.com';
+    else if (ticker === 'XPEV') domain = 'xiaopeng.com';
+    else if (ticker === 'AAPL') domain = 'apple.com';
+    else if (ticker === 'META') domain = 'meta.com';
+    else if (ticker === 'EQIX') domain = 'equinix.com';
+    else if (ticker === 'MBLY') domain = 'mobileye.com';
+  }
+  if (domain) {
+    return '<span class="company-logo" style="background:' + color + '"><img src="https://www.google.com/s2/favicons?domain=' + domain + '&sz=32" onerror="this.style.display=\'none\';this.parentElement.textContent=\'' + initial + '\'" style="width:22px;height:22px;border-radius:4px" alt=""></span>';
+  }
+  return '<span class="company-logo" style="background:' + color + '">' + initial + '</span>';
+}
+
 function escapeHTML(str) {
 const div = document.createElement('div');
 div.textContent = str;
@@ -485,13 +523,15 @@ ${item.name}
 <span class="ranking-companies-count">${item.companies.length} 家公司 | 点击 📊 查看K线</span>
 </div>
 <div class="ranking-companies-grid" id="ranking-grid-${sectorId}">
-${item.companies.map(c => {
+${item.companies.slice(0, 10).map((c, ci) => {
 const capBadge = renderCapBadge(c);
 const stockBadge = renderStockBadge(c);
+const logo = renderCompanyLogo(c);
 return `
 <div class="ranking-company-card">
 <div class="ranking-company-left">
-<span class="ranking-company-country">${c.country}</span>
+<span class="ranking-company-rank-num">${ci + 1}</span>
+${logo}
 <span class="ranking-company-name">${escapeHTML(c.name)}</span>
 <span class="ranking-company-note">${c.note}</span>
 </div>
@@ -501,6 +541,8 @@ ${stockBadge}
 </div>
 </div>`;
 }).join('')}
+${item.companies.length > 10 ? '<div class="ranking-company-card" style="opacity:0.5;justify-content:center;font-size:12px;color:var(--text-muted)">... 还有 ' + (item.companies.length - 10) + ' 家</div>' : ''}
+</div>
 </div>
 </div>
 </td>
@@ -549,13 +591,15 @@ const grid = document.getElementById('ranking-grid-' + sectorId);
 if (!grid) return;
 const sector = industryData.find(s => s.id === sectorId);
 if (!sector) return;
-grid.innerHTML = sector.companies.map(c => {
+grid.innerHTML = sector.companies.slice(0, 10).map((c, ci) => {
 const capBadge = renderCapBadge(c);
 const stockBadge = renderStockBadge(c);
+const logo = renderCompanyLogo(c);
 return `
 <div class="ranking-company-card">
 <div class="ranking-company-left">
-<span class="ranking-company-country">${c.country}</span>
+<span class="ranking-company-rank-num">${ci + 1}</span>
+${logo}
 <span class="ranking-company-name">${escapeHTML(c.name)}</span>
 <span class="ranking-company-note">${c.note}</span>
 </div>
@@ -565,6 +609,9 @@ ${stockBadge}
 </div>
 </div>`;
 }).join('');
+if (sector.companies.length > 10) {
+  grid.innerHTML += '<div class="ranking-company-card" style="opacity:0.5;justify-content:center;font-size:12px;color:var(--text-muted)">... 还有 ' + (sector.companies.length - 10) + ' 家</div>';
+}
 }
 function refreshAllExpandedRankings() {
 document.querySelectorAll('.ranking-expand-row').forEach(row => {
