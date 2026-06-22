@@ -810,7 +810,10 @@ async function fetchRSSFeed(source) {
   try {
     const apiUrl = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(source.url);
     const resp = await fetch(apiUrl);
-    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    if (!resp.ok) {
+      if (resp.status === 429) { await new Promise(r => setTimeout(r, 2000)); }
+      throw new Error('HTTP ' + resp.status);
+    }
     const data = await resp.json();
     if (data.status !== 'ok') throw new Error(data.message || 'API error');
     return (data.items || []).map(function(item) {
@@ -1426,24 +1429,40 @@ const cleanTitle = r.title.replace(/^公司动态研究报告[：:]\s*/, '').rep
 parts.push(cleanTitle);
 return parts.join('。');
 }
-async function runResearchCycle(forceRefresh = false) {
-if (!forceRefresh) {
-try {
-const cached = sessionStorage.getItem(RESEARCH_CACHE_KEY);
-if (cached) {
-const reports = JSON.parse(cached);
-console.log(`📋 从缓存加载 ${reports.length} 篇研报`);
-renderResearchCards(reports);
-return;
-}
-} catch(e) {}
-}
-const reports = await fetchAllResearch();
-if (reports.length > 0) {
-try { sessionStorage.setItem(RESEARCH_CACHE_KEY, JSON.stringify(reports)); } catch(e) {}
-renderResearchCards(reports);
-enrichResearchDigests(reports, 10);
-}
+async function runResearchCycle(forceRefresh) {
+  if (!forceRefresh) {
+    try {
+      var cached = sessionStorage.getItem(RESEARCH_CACHE_KEY);
+      if (cached) {
+        var reports = JSON.parse(cached);
+        console.log('📋 从缓存加载 ' + reports.length + ' 篇研报');
+        renderResearchCards(reports);
+        return;
+      }
+    } catch(e) {}
+  }
+
+  var reports = [];
+  try {
+    reports = await fetchAllResearch();
+  } catch(e) { console.warn('研报抓取异常:', e.message); }
+
+  if (reports.length > 0) {
+    try { sessionStorage.setItem(RESEARCH_CACHE_KEY, JSON.stringify(reports)); } catch(e) {}
+    renderResearchCards(reports);
+    enrichResearchDigests(reports, 10);
+  } else {
+    var container = $('#researchCards');
+    if (container) {
+      var empty = container.querySelector('.news-empty');
+      if (!empty) {
+        empty = document.createElement('div');
+        empty.className = 'news-empty';
+        container.appendChild(empty);
+      }
+      empty.textContent = '📋 研报接口暂时无数据，请稍后刷新（数据源：东方财富+同花顺）';
+    }
+  }
 }
 function showToast(message) {
 let toast = $('#liveToast');
@@ -1688,14 +1707,27 @@ async function runRealNewsCycle(forceRefresh) {
       return;
     }
   }
-  const allNews = await fetchAllRealNews();
-  if (allNews.length === 0) { runFallbackSim(10); return; }
+  var allNews = [];
+  try { allNews = await fetchAllRealNews(); } catch(e) { console.warn('新闻抓取异常:', e.message); }
+
+  if (allNews.length === 0) {
+    updateNewsStatus('📡 未获取到实时新闻，显示行业动态');
+    runFallbackSim(15);
+    refreshAll();
+    return;
+  }
+
   saveNewsCache(allNews);
-  allNews.forEach(function(news) { RENDERED_NEWS_TITLES.add(news.title); applyRealNews(news); });
+  try {
+    allNews.forEach(function(news) { RENDERED_NEWS_TITLES.add(news.title); applyRealNews(news); });
+  } catch(e) { console.warn('新闻渲染异常:', e.message); }
+
   renderNewsTimeline();
-  // 如果真实新闻太少，补充模拟数据到至少20条
-  var realCount = $('#newsCards').querySelectorAll('.news-card').length;
-  if (realCount < 20) runFallbackSim(20 - realCount);
+
+  var cards = $('#newsCards').querySelectorAll('.news-card');
+  if (cards.length < 15) runFallbackSim(15 - cards.length);
+
+  updateNewsStatus('📡 已加载 ' + allNews.length + ' 条AI新闻');
   refreshAll();
 }
 
@@ -1764,8 +1796,22 @@ function runFallbackSim(count) {
   refreshAll();
 }
 
+function updateNewsStatus(msg) {
+  var container = $('#newsCards');
+  if (!container) return;
+  var status = container.querySelector('.news-status-msg');
+  if (!status) {
+    status = document.createElement('div');
+    status.className = 'news-status-msg';
+    status.style.cssText = 'grid-column:1/-1;text-align:center;padding:12px;color:var(--text-muted);font-size:13px;';
+    container.insertBefore(status, container.firstChild);
+  }
+  status.textContent = msg;
+}
+
 function startRealNewsFeed() {
-  setTimeout(function() { runRealNewsCycle(); }, 2000);
+  updateNewsStatus('📡 正在连接信息源...');
+  setTimeout(function() { runRealNewsCycle(); }, 1500);
   setInterval(function() { refreshNewsInBackground(); }, 60 * 1000);
 }
 
