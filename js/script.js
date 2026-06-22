@@ -816,50 +816,19 @@ ctx.fillText('Vol', padding.left - 6, volTop + 10);
 ctx.fillText((maxVol / 1e6).toFixed(0) + 'M', padding.left - 6, volTop + volH - 2);
 }
 const RSS_SOURCES = [
-  // 国内AI科技媒体（直接RSS）
-  { url: 'https://www.qbitai.com/feed', label: '量子位' },
+  // 已验证可用的中文科技RSS
   { url: 'https://36kr.com/feed', label: '36氪' },
+  { url: 'https://www.qbitai.com/feed', label: '量子位' },
   { url: 'https://sspai.com/feed', label: '少数派' },
   { url: 'https://www.ithome.com/rss/', label: 'IT之家' },
-  { url: 'https://www.pingwest.com/feed', label: '品玩' },
-  { url: 'https://www.geekpark.net/feed', label: '极客公园' },
-  { url: 'https://www.jiqizhixin.com/rss', label: '机器之心' },
-  // Google News 中文 — 覆盖AI全产业链每个赛道
-  { url: 'https://news.google.com/rss/search?q=AI+%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD+%E6%9C%80%E6%96%B0&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google AI综合' },
-  { url: 'https://news.google.com/rss/search?q=%E5%A4%A7%E6%A8%A1%E5%9E%8B+ChatGPT+Claude+Gemini+%E8%AE%AD%E7%BB%83&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google 大模型' },
-  { url: 'https://news.google.com/rss/search?q=AI%E8%8A%AF%E7%89%87+NVIDIA+GPU+%E6%98%87%E8%85%BE+%E5%AF%92%E6%AD%A6%E7%BA%AA&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google AI芯片' },
-  { url: 'https://news.google.com/rss/search?q=%E8%8B%B1%E4%BC%9F%E8%BE%BE+%E5%8F%B0%E7%A7%AF%E7%94%B5+%E5%8D%8A%E5%AF%BC%E4%BD%93+%E5%88%B6%E7%A8%8B+%E5%85%89%E5%88%BB&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google 半导体' },
-  { url: 'https://news.google.com/rss/search?q=%E6%9C%BA%E5%99%A8%E4%BA%BA+%E4%BA%BA%E5%BD%A2%E6%9C%BA%E5%99%A8%E4%BA%BA+%E5%85%B7%E8%BA%AB%E6%99%BA%E8%83%BD+Figure+Optimus&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google 机器人' },
-  { url: 'https://news.google.com/rss/search?q=%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6+%E6%99%BA%E9%A9%BE+Waymo+%E8%90%9D%E5%8D%9C%E5%BF%AB%E8%B7%91+FSD&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google 自动驾驶' },
-  { url: 'https://news.google.com/rss/search?q=AI+Agent+%E6%99%BA%E8%83%BD%E4%BD%93+%E8%87%AA%E4%B8%BB+%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google AI Agent' },
-  { url: 'https://news.google.com/rss/search?q=AI%E5%8C%BB%E7%96%97+AI%E5%88%B6%E8%8D%AF+%E5%8C%BB%E7%96%97AI+%E8%9B%8B%E7%99%BD%E8%B4%A8&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google AI医疗' },
-  { url: 'https://news.google.com/rss/search?q=AI%E9%87%91%E8%9E%8D+%E6%99%BA%E8%83%BD%E6%8A%95%E9%A1%BE+%E9%87%8F%E5%8C%96+%E9%A3%8E%E6%8E%A7&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google AI金融' },
-  { url: 'https://news.google.com/rss/search?q=AIGC+%E6%96%87%E7%94%9F%E5%9B%BE+%E6%96%87%E7%94%9F%E8%A7%86%E9%A2%91+Sora+%E5%8F%AF%E7%81%B5&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google AIGC' },
-  { url: 'https://news.google.com/rss/search?q=AI%E7%BC%96%E7%A8%8B+AI%E4%BB%A3%E7%A0%81+GitHub+Copilot+Cursor+%E7%BC%96%E7%A8%8B%E5%8A%A9%E6%89%8B&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google AI编程' },
-  { url: 'https://news.google.com/rss/search?q=%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83+%E7%AE%97%E5%8A%9B+%E4%BA%91%E8%AE%A1%E7%AE%97+AI%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google 算力' },
-  { url: 'https://news.google.com/rss/search?q=%E5%A4%9A%E6%A8%A1%E6%80%81+%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89+%E8%AF%AD%E9%9F%B3%E8%AF%86%E5%88%AB+AI%E8%A7%86%E8%A7%89&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google 多模态' },
-  { url: 'https://news.google.com/rss/search?q=AI%E6%8A%95%E8%B5%84+AI%E8%9E%8D%E8%B5%84+AI%E4%B8%8A%E5%B8%82+AI%E4%BC%B0%E5%80%BC+%E5%88%9B%E6%8A%95&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google AI投融资' },
-  { url: 'https://news.google.com/rss/search?q=OpenAI+Anthropic+Meta+%E5%BE%AE%E8%BD%AF+%E8%B0%B7%E6%AD%8C+%E4%BA%9A%E9%A9%AC%E9%80%8A+AI&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google 科技巨头AI' },
-  { url: 'https://news.google.com/rss/search?q=%E4%B8%AD%E5%9B%BD+AI+%E5%9B%BD%E4%BA%A7+%E5%8D%8E%E4%B8%BA+%E7%99%BE%E5%BA%A6+%E9%98%BF%E9%87%8C+%E5%AD%97%E8%8A%82+%E8%85%BE%E8%AE%AF&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google 中国AI' },
-  { url: 'https://news.google.com/rss/search?q=AI%E6%94%BF%E7%AD%96+AI%E7%9B%91%E7%AE%A1+AI%E5%AE%89%E5%85%A8+AI%E6%B3%95%E8%A7%84&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google AI政策' },
-  { url: 'https://news.google.com/rss/search?q=AI%E6%95%99%E8%82%B2+AI%E5%9F%B9%E8%AE%AD+AI%E5%AD%A6%E4%B9%A0+%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google AI教育' },
-  { url: 'https://news.google.com/rss/search?q=%E5%8D%8E%E4%B8%BA+%E5%AD%97%E8%8A%82+%E7%99%BE%E5%BA%A6+%E9%98%BF%E9%87%8C+%E8%85%BE%E8%AE%AF+%E7%A7%91%E5%A4%A7%E8%AE%AF%E9%A3%9E+AI%E5%B8%83%E5%B1%80&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google 大厂AI' },
-  { url: 'https://news.google.com/rss/search?q=AI%E8%A1%8C%E4%B8%9A+%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E4%BA%A7%E4%B8%9A+%E6%99%BA%E8%83%BD%E5%88%B6%E9%80%A0+%E6%95%B0%E5%AD%97%E5%8C%96&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google AI产业' },
-
-  { url: 'https://news.google.com/rss/search?q=site:tech.qq.com+AI&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: '腾讯科技' },
-  { url: 'https://news.google.com/rss/search?q=site:163.com+AI+%E7%A7%91%E6%8A%80&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: '网易科技' },
-  { url: 'https://news.google.com/rss/search?q=site:tech.sina.com.cn+AI&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: '新浪科技' },
-  { url: 'https://news.google.com/rss/search?q=site:sohu.com+AI+%E7%A7%91%E6%8A%80&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: '搜狐科技' },
-  { url: 'https://news.google.com/rss/search?q=site:ifeng.com+AI+%E7%A7%91%E6%8A%80&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: '凤凰科技' },
-  { url: 'https://news.google.com/rss/search?q=site:huxiu.com+AI&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: '虎嗅' },
-  { url: 'https://news.google.com/rss/search?q=site:tmtpost.com+AI&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: '钛媒体' },
-  { url: 'https://news.google.com/rss/search?q=site:wallstreetcn.com+AI&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: '华尔街见闻' },
+  // RSSHub 聚合源（多路备用）
+  { url: 'https://rsshub.pseudoyu.com/36kr/motif/ai', label: '36氪AI专题' },
+  { url: 'https://rsshub.pseudoyu.com/ithome', label: 'IT之家2' },
+  // 英文科技（备用，会被AI关键词过滤）
+  { url: 'https://feeds.feedburner.com/TheHackersNews', label: 'HackerNews' },
+  { url: 'https://www.technologyreview.com/feed/', label: 'MIT Tech Review' },
 ];
 
-
-// ============================================
-// 投研报告系统 — 基于 Google News RSS 聚合
-// ============================================
 const RESEARCH_CACHE_KEY = 'ai_research_cache_v4';
 
 // 研报搜索关键词（覆盖各赛道）
@@ -1416,7 +1385,7 @@ async function runRealNewsCycle(forceRefresh) {
   renderNewsTimeline();
 
   var cards = $('#newsCards').querySelectorAll('.news-card');
-  if (cards.length < 15) runFallbackSim(15 - cards.length);
+  if (cards.length < 20) runFallbackSim(20 - cards.length);
 
   updateNewsStatus('📡 已加载 ' + allNews.length + ' 条AI新闻');
   refreshAll();
