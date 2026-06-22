@@ -37,7 +37,7 @@ try {
 const raw = localStorage.getItem(INDEX_CACHE_KEY);
 if (!raw) return null;
 const cache = JSON.parse(raw);
-if (Date.now() - cache.ts < 10000) return cache.data;
+if (Date.now() - cache.ts < 2000) return cache.data;
 } catch(e) {}
 return null;
 }
@@ -117,7 +117,7 @@ if (d) renderIndexItem(cfg, d.price, d.change, d.changePct);
 });
 }
 fetchIndexData();
-setInterval(fetchIndexData, 15000); // 15秒实时更新
+setInterval(fetchIndexData, 3000); // 15秒实时更新
 }
 function getStockData(ticker) {
 const cached = STOCK_CACHE[ticker]?.data;
