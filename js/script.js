@@ -25,11 +25,11 @@ const STOCK_CACHE = {};
 const CACHE_TTL = 5 * 60 * 1000;
 const CNY_USD_RATE = 7.25;
 const INDEX_CONFIG = [
-{ id: 'idx-shanghai', ticker: '000001.SS', name: '上证指数' },
-{ id: 'idx-shenzhen', ticker: '399001.SZ', name: '深证成指' },
-{ id: 'idx-nasdaq', ticker: '%5EIXIC', name: '纳斯达克', isUSD: true },
-{ id: 'idx-hsi', ticker: '%5EHSI', name: '恒生指数' },
-{ id: 'idx-sp500', ticker: '%5EGSPC', name: '标普500', isUSD: true },
+  { id: 'idx-shanghai', ticker: '000001.SS', name: '上证指数' },
+  { id: 'idx-shenzhen', ticker: '399001.SZ', name: '深证成指' },
+  { id: 'idx-chinext', ticker: '399006.SZ', name: '创业板指' },
+  { id: 'idx-hstech', ticker: '%5EHSTECH', name: '恒生科技', isHKD: true, hkdRate: 0.93 },
+  { id: 'idx-nasdaq', ticker: '%5EIXIC', name: '纳斯达克', isUSD: true },
 ];
 const INDEX_CACHE_KEY = 'ai_index_cache';
 function loadIndexCache() {
@@ -37,7 +37,7 @@ try {
 const raw = localStorage.getItem(INDEX_CACHE_KEY);
 if (!raw) return null;
 const cache = JSON.parse(raw);
-if (Date.now() - cache.ts < 30000) return cache.data;
+if (Date.now() - cache.ts < 10000) return cache.data;
 } catch(e) {}
 return null;
 }
@@ -45,10 +45,13 @@ function saveIndexCache(data) {
 try { localStorage.setItem(INDEX_CACHE_KEY, JSON.stringify({ ts: Date.now(), data })); } catch(e) {}
 }
 function renderIndexItem(idxInfo, price, change, changePct) {
-const el = $('#' + idxInfo.id);
-if (!el) return;
-const displayPrice = idxInfo.isUSD ? price * CNY_USD_RATE : price;
-const displayChange = idxInfo.isUSD ? change * CNY_USD_RATE : change;
+  const el = $('#' + idxInfo.id);
+  if (!el) return;
+  let rate = 1;
+  if (idxInfo.isUSD) rate = CNY_USD_RATE;
+  if (idxInfo.isHKD) rate = (idxInfo.hkdRate || 0.93);
+  const displayPrice = price * rate;
+  const displayChange = change * rate;
 const direction = change >= 0 ? 'up' : 'down';
 const sign = change >= 0 ? '+' : '';
 el.className = 'index-item ' + direction;
@@ -114,7 +117,7 @@ if (d) renderIndexItem(cfg, d.price, d.change, d.changePct);
 });
 }
 fetchIndexData();
-setInterval(fetchIndexData, 30000);
+setInterval(fetchIndexData, 15000); // 15秒实时更新
 }
 function getStockData(ticker) {
 const cached = STOCK_CACHE[ticker]?.data;
