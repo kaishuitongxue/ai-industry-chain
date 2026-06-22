@@ -1000,6 +1000,7 @@
   ];
 
   const FETCHED_NEWS_SET = new Set();
+  const RENDERED_NEWS_TITLES = new Set(); // 已渲染到卡片的新闻标题
   // --- 新闻缓存（sessionStorage，刷新页面重新抓取）---
   const NEWS_CACHE_KEY = 'ai_news_cache_v2';
   function loadNewsCache() {
@@ -1196,7 +1197,7 @@
     // 1. 优先用预抓取结果
     if (!forceRefresh && _prefetchedNews && _prefetchedNews.length > 0) {
       console.log(`📡 预抓取就绪，${_prefetchedNews.length} 条新闻即时加载`);
-      _prefetchedNews.forEach(news => applyRealNews(news));
+      _prefetchedNews.forEach(news => { RENDERED_NEWS_TITLES.add(news.title); applyRealNews(news); });
       _prefetchedNews = null;
       sortNewsByDate();
       refreshAll();
@@ -1209,7 +1210,7 @@
       const cached = loadNewsCache();
       if (cached && cached.length > 0) {
         console.log(`📡 从缓存加载 ${cached.length} 条新闻`);
-        cached.forEach(news => applyRealNews(news));
+        cached.forEach(news => { RENDERED_NEWS_TITLES.add(news.title); applyRealNews(news); });
         sortNewsByDate();
         refreshAll();
         refreshNewsInBackground();
@@ -1225,7 +1226,7 @@
     }
     saveNewsCache(allNews);
     // 批量渲染
-    allNews.forEach(news => applyRealNews(news));
+    allNews.forEach(news => { RENDERED_NEWS_TITLES.add(news.title); applyRealNews(news); });
     sortNewsByDate();
     refreshAll();
   }
@@ -1233,9 +1234,30 @@
   async function refreshNewsInBackground() {
     try {
       const allNews = await fetchAllRealNews();
-      if (allNews.length > 0) {
-        saveNewsCache(allNews);
-        console.log(`📡 后台更新 ${allNews.length} 条新闻`);
+      if (allNews.length === 0) return;
+      saveNewsCache(allNews);
+
+      // 只渲染新增的新闻（未显示过的）
+      let newCount = 0;
+      for (const news of allNews) {
+        if (RENDERED_NEWS_TITLES.has(news.title)) continue;
+        RENDERED_NEWS_TITLES.add(news.title);
+        applyRealNews(news);
+        newCount++;
+        if (newCount >= 10) break; // 每次最多新增10条
+      }
+
+      if (newCount > 0) {
+        sortNewsByDate();
+        refreshAll();
+        const timeStr = new Date().toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+        showToast(`📡 ${timeStr} 更新 ${newCount} 条AI情报`);
+      }
+
+      // 更新时间戳
+      const updateEl = $('#newsUpdateTime');
+      if (updateEl) {
+        updateEl.textContent = new Date().toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit'});
       }
     } catch (e) { /* silent */ }
   }
@@ -1259,7 +1281,7 @@
 
   function startRealNewsFeed() {
     setTimeout(() => runRealNewsCycle(), 2000);
-    setInterval(() => runRealNewsCycle(), 5 * 60 * 1000);
+    setInterval(() => refreshNewsInBackground(), 60 * 1000); // 每60秒实时更新
     setInterval(() => runFallbackSim(), 3 * 60 * 1000);
   }
 
@@ -1350,6 +1372,7 @@
     if (cards.length > 80) {
       cards[cards.length - 1].remove();
     }
+    RENDERED_NEWS_TITLES.add(title);
   }
 
   // --- 新闻层级过滤 ---
