@@ -460,26 +460,26 @@ ${trendHTML(item.trend, item.trendDesc)}
 <div class="score-bar-wrap">
 <div class="score-bar" style="width:${item.scarcity*10}%;background:${sC}"></div>
 </div>
-<span class="score-value" style="color:${sC}">${item.scarcity.toFixed(1)}${renderIndividualDelta(item, 'scarcity')}</span>
+<span class="score-value" style="color:${sC}">${(item.scarcity||0).toFixed(1)}${renderIndividualDelta(item, 'scarcity')}</span>
 </div>
 <div class="score-row">
 <span class="score-label">💎 价值</span>
 <div class="score-bar-wrap">
 <div class="score-bar" style="width:${item.value*10}%;background:${vC}"></div>
 </div>
-<span class="score-value" style="color:${vC}">${item.value.toFixed(1)}${renderIndividualDelta(item, 'value')}</span>
+<span class="score-value" style="color:${vC}">${(item.value||0).toFixed(1)}${renderIndividualDelta(item, 'value')}</span>
 </div>
 <div class="score-row">
 <span class="score-label">🏰 壁垒</span>
 <div class="score-bar-wrap">
 <div class="score-bar" style="width:${item.barrier*10}%;background:${bC}"></div>
 </div>
-<span class="score-value" style="color:${bC}">${item.barrier.toFixed(1)}${renderIndividualDelta(item, 'barrier')}</span>
+<span class="score-value" style="color:${bC}">${(item.barrier||0).toFixed(1)}${renderIndividualDelta(item, 'barrier')}</span>
 </div>
 </div>
 <div class="card-composite">
 <span class="composite-label">📊 综合评分</span>
-<span class="composite-score" style="color:${compC}">${item.composite.toFixed(1)}${renderIndividualDelta(item, 'composite')}</span>
+<span class="composite-score" style="color:${compC}">${(item.composite||0).toFixed(1)}${renderIndividualDelta(item, 'composite')}</span>
 </div>
 <div class="card-summary">${item.summary}</div>
 ${newsHTML}
@@ -509,10 +509,10 @@ return `
 ${item.name}
 </td>
 <td class="rank-layer">${item.layerName}</td>
-<td style="color:${sC};font-weight:600">${item.scarcity.toFixed(1)}${renderIndividualDelta(item, 'scarcity')}</td>
-<td style="color:var(--accent-purple);font-weight:600">${item.value.toFixed(1)}${renderIndividualDelta(item, 'value')}</td>
-<td style="color:var(--accent-cyan);font-weight:600">${item.barrier.toFixed(1)}${renderIndividualDelta(item, 'barrier')}</td>
-<td style="color:var(--accent-blue);font-weight:700">${item.composite.toFixed(1)}${renderIndividualDelta(item, 'composite')}</td>
+<td style="color:${sC};font-weight:600">${(item.scarcity||0).toFixed(1)}${renderIndividualDelta(item, 'scarcity')}</td>
+<td style="color:var(--accent-purple);font-weight:600">${(item.value||0).toFixed(1)}${renderIndividualDelta(item, 'value')}</td>
+<td style="color:var(--accent-cyan);font-weight:600">${(item.barrier||0).toFixed(1)}${renderIndividualDelta(item, 'barrier')}</td>
+<td style="color:var(--accent-blue);font-weight:700">${(item.composite||0).toFixed(1)}${renderIndividualDelta(item, 'composite')}</td>
 <td>${trendIndicator(item.trend)} ${item.trendDesc}</td>
 </tr>
 <tr class="ranking-expand-row" id="expand-${sectorId}" style="display:none">
