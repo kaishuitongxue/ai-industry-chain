@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 全产业链图谱 | 实时评分 · 行业洞察</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- 顶部导航 -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo" onclick="switchPage('overview')" title="回到首页">
+      <span class="logo-icon">🧠</span>
+      <span class="logo-text">AI 产业链图谱</span>
+    </div>
+    <nav class="nav">
+      <a href="#overview" class="nav-link active" data-page="overview" title="📊 概览总览">概览</a>
+      <a href="#research" class="nav-link" data-page="research" title="📋 投研报告">投研</a>
+      <a href="#news" class="nav-link" data-page="news" title="📡 实时情报">情报</a>
+      <div class="nav-dropdown" id="navChainDropdown">
+        <span class="nav-link nav-dropdown-toggle" data-page="chain" title="产业链">产业链 ▾</span>
+        <div class="nav-dropdown-menu">
+          <a href="#upstream" class="nav-link nav-dropdown-item" data-page="upstream" title="🔩 上游·基础层">🔩 上游·基础层</a>
+          <a href="#midstream" class="nav-link nav-dropdown-item" data-page="midstream" title="⚙️ 中游·技术层">⚙️ 中游·技术层</a>
+          <a href="#downstream" class="nav-link nav-dropdown-item" data-page="downstream" title="🚀 下游·应用层">🚀 下游·应用层</a>
+        </div>
+      </div>
+      <a href="#ranking" class="nav-link" data-page="ranking" title="🏅 综合排名">排名</a>
+    </nav>
+    <div class="header-right">
+      <div class="search-box" id="searchBox">
+        <input type="text" class="search-input" id="searchInput" placeholder="🔍 搜索..." autocomplete="off">
+        <div class="search-dropdown" id="searchDropdown"></div>
+      </div>
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="切换深色/浅色">🌙</button>
+    </div>
+  </div>
+</header>
+
+
+<!-- 市场指数条 -->
+<div class="index-bar" id="indexBar">
+  <div class="index-bar-inner">
+    <span class="index-item" id="idx-shanghai">
+      <span class="index-name">上证指数</span>
+      <span class="index-value">--</span>
+      <span class="index-change">--</span>
+    </span>
+    <span class="index-item" id="idx-shenzhen">
+      <span class="index-name">深证成指</span>
+      <span class="index-value">--</span>
+      <span class="index-change">--</span>
+    </span>
+    <span class="index-item" id="idx-nasdaq">
+      <span class="index-name">纳斯达克</span>
+      <span class="index-value">--</span>
+      <span class="index-change">--</span>
+    </span>
+    <span class="index-item" id="idx-hsi">
+      <span class="index-name">恒生指数</span>
+      <span class="index-value">--</span>
+      <span class="index-change">--</span>
+    </span>
+    <span class="index-item" id="idx-sp500">
+      <span class="index-name">标普500</span>
+      <span class="index-value">--</span>
+      <span class="index-change">--</span>
+    </span>
+  </div>
+</div>
+
+<!-- ===== 页面容器 ===== -->
+<main class="main-container">
+
+    <!-- ========== 页面 1：概览总览 ========== -->
+  <section id="page-overview" class="page-section active">
+    <div class="section">
+      <h2 class="section-title">
+        <span class="title-icon">📊</span>AI 全产业链概览
+      </h2>
+      <p class="section-desc">覆盖 AI 产业上中下游 <strong>18</strong> 个关键赛道 · 综合评估紧缺度、价值与壁垒 · 点击赛道卡片查看详情</p>
+
+      <!-- 三层产业链卡片 -->
+      <div class="chain-cards">
+        <div class="chain-card-wrap" onclick="switchPage('upstream')">
+          <div class="chain-card upstream">
+            <div class="chain-card-header">🔩 上游 · 基础层 <span class="chain-arrow-icon">→</span></div>
+            <div class="chain-card-tags" id="upstreamTags"></div>
+          </div>
+        </div>
+        <div class="chain-card-wrap" onclick="switchPage('midstream')">
+          <div class="chain-card midstream">
+            <div class="chain-card-header">⚙️ 中游 · 技术层 <span class="chain-arrow-icon">→</span></div>
+            <div class="chain-card-tags" id="midstreamTags"></div>
+          </div>
+        </div>
+        <div class="chain-card-wrap" onclick="switchPage('downstream')">
+          <div class="chain-card downstream">
+            <div class="chain-card-header">🚀 下游 · 应用层 <span class="chain-arrow-icon">→</span></div>
+            <div class="chain-card-tags" id="downstreamTags"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 仪表盘 -->
+      <div class="dashboard" id="dashboard">
+        <div class="dashboard-card glow-card">
+          <div class="dash-icon">🏆</div>
+          <h3>综合价值最高</h3>
+          <div id="topValue" class="dash-content"></div>
+        </div>
+        <div class="dashboard-card glow-card">
+          <div class="dash-icon">🔥</div>
+          <h3>最为紧缺</h3>
+          <div id="topScarcity" class="dash-content"></div>
+        </div>
+        <div class="dashboard-card glow-card">
+          <div class="dash-icon">🏰</div>
+          <h3>壁垒最高</h3>
+          <div id="topBarrier" class="dash-content"></div>
+        </div>
+        <div class="dashboard-card glow-card">
+          <div class="dash-icon">📈</div>
+          <h3>近期热度上升</h3>
+          <div id="topTrending" class="dash-content"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 页面 2：投研报告 ========== -->
+  <section id="page-research" class="page-section">
+    <div class="section">
+      <h2 class="section-title">
+        <span class="title-icon">📋</span>AI 投研报告
+      </h2>
+      <p class="section-desc">来自东方财富等平台的真实券商研报 · AI关键词智能筛选 · 自动摘要 · 点击标题查看原文</p>
+      <div class="research-cards" id="researchCards">
+        <div class="news-empty">⏳ 正在抓取最新 AI 投研报告...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 页面 3：AI 实时情报 ========== -->
+  <section id="page-news" class="page-section">
+    <div class="section">
+      <h2 class="section-title">
+        <span class="title-icon">📡</span>AI 实时情报
+      </h2>
+      <p class="section-desc">真实行业新闻 · 自动匹配赛道 · 联动评分 · 点击卡片查看原文</p>
+
+      <div class="news-layer-filter page-filter">
+        <span class="news-layer-tag active" data-layer="all" onclick="filterNewsByLayer('all');updateFilterTags(this)">全部</span>
+        <span class="news-layer-tag" data-layer="upstream" onclick="filterNewsByLayer('upstream');updateFilterTags(this)">🔩 上游</span>
+        <span class="news-layer-tag" data-layer="midstream" onclick="filterNewsByLayer('midstream');updateFilterTags(this)">⚙️ 中游</span>
+        <span class="news-layer-tag" data-layer="downstream" onclick="filterNewsByLayer('downstream');updateFilterTags(this)">🚀 下游</span>
+      </div>
+
+      <div class="news-cards news-cards-page" id="newsCards">
+        <div class="news-empty">⏳ 正在从 RSS 新闻源抓取最新 AI 行业动态...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 页面 3：上游·基础层 ========== -->
+  <section id="page-upstream" class="page-section">
+    <div class="section">
+      <h2 class="section-title">
+        <span class="title-icon">🔩</span>上游 · 基础层
+        <span class="layer-badge upstream-badge">根基</span>
+      </h2>
+      <p class="section-desc">算力、芯片、数据——AI 产业的"水电煤"，是整个产业链的物理基础。</p>
+      <div class="cards-grid" id="upstreamCards"></div>
+    </div>
+  </section>
+
+  <!-- ========== 页面 4：中游·技术层 ========== -->
+  <section id="page-midstream" class="page-section">
+    <div class="section">
+      <h2 class="section-title">
+        <span class="title-icon">⚙️</span>中游 · 技术层
+        <span class="layer-badge midstream-badge">引擎</span>
+      </h2>
+      <p class="section-desc">模型、算法、平台——将算力转化为智能的核心技术环节。</p>
+      <div class="cards-grid" id="midstreamCards"></div>
+    </div>
+  </section>
+
+  <!-- ========== 页面 5：下游·应用层 ========== -->
+  <section id="page-downstream" class="page-section">
+    <div class="section">
+      <h2 class="section-title">
+        <span class="title-icon">🚀</span>下游 · 应用层
+        <span class="layer-badge downstream-badge">落地</span>
+      </h2>
+      <p class="section-desc">场景、产品、服务——AI 技术在各行各业的商业化落地。</p>
+      <div class="cards-grid" id="downstreamCards"></div>
+    </div>
+  </section>
+
+  <!-- ========== 页面 6：综合排名 ========== -->
+  <section id="page-ranking" class="page-section">
+    <div class="section">
+      <h2 class="section-title">
+        <span class="title-icon">🏅</span>AI 产业链综合排名
+      </h2>
+      <p class="section-desc">按综合得分排序（紧缺度 × 40% + 价值 × 35% + 壁垒 × 25%），点击表头可排序。</p>
+      <div class="table-wrapper">
+        <table class="ranking-table" id="rankingTable">
+          <thead>
+            <tr>
+              <th>排名</th>
+              <th>赛道</th>
+              <th>所属层级</th>
+              <th class="sortable" data-sort="scarcity">紧缺度 🔽</th>
+              <th class="sortable" data-sort="value">价值</th>
+              <th class="sortable" data-sort="barrier">壁垒</th>
+              <th class="sortable" data-sort="composite">综合得分</th>
+              <th>趋势</th>
+            </tr>
+          </thead>
+          <tbody id="rankingBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <p>📊 AI 全产业链图谱 · 数据仅供参考 · 评分为行业研究综合评估</p>
+  <p class="footer-note">Data source: public industry reports & news aggregation | Yahoo Finance | RSS News</p>
+</footer>
+
+<script src="data/industry-data.js"></script>
+<script src="js/script.js"></script>
+</body>
+</html>
