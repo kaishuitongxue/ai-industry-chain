@@ -936,23 +936,37 @@ return [];
 }
 }
 async function fetchAllRealNews() {
-console.log('📡 正在抓取真实AI行业新闻...');
-const results = await Promise.all(RSS_SOURCES.map(fetchRSSFeed));
-const allNews = results.flat();
-const processed = [];
-for (const news of allNews) {
-if (!news.title || FETCHED_NEWS_SET.has(news.title)) continue;
-FETCHED_NEWS_SET.add(news.title);
-const sectorIds = mapNewsToSectors(news.title);
-if (!sectorIds) continue;
-const sentiment = analyzeSentiment(news.title);
-const companies = matchCompaniesInTitle(news.title, sectorIds);
-processed.push({ ...news, sectorIds, sentiment, companies });
-}
-processed.sort((a, b) => b.date.localeCompare(a.date));
-const top = processed.slice(0, 60);
-console.log(`✅ AI产业相关真实新闻: ${top.length} 条`);
-return top;
+  console.log('📡 正在抓取当天最新AI行业新闻...');
+  const results = await Promise.allSettled(RSS_SOURCES.map(fetchRSSFeed));
+  const allNews = results.filter(r => r.status === 'fulfilled').flatMap(r => r.value);
+
+  // 当天日期过滤
+  const today = new Date().toISOString().slice(0, 10);
+  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+  const todayNews = [];
+  const yesterdayNews = [];
+
+  for (const news of allNews) {
+    if (!news.title || FETCHED_NEWS_SET.has(news.title)) continue;
+    const newsDate = news.date;
+    if (newsDate !== today && newsDate !== yesterday) continue;
+    FETCHED_NEWS_SET.add(news.title);
+    const sectorIds = mapNewsToSectors(news.title);
+    if (!sectorIds) continue;
+    const sentiment = analyzeSentiment(news.title);
+    const companies = matchCompaniesInTitle(news.title, sectorIds);
+    const item = { ...news, sectorIds, sentiment, companies };
+    if (newsDate === today) todayNews.push(item);
+    else yesterdayNews.push(item);
+  }
+
+  // 今天的在前，昨天的在后
+  todayNews.sort((a, b) => b.date.localeCompare(a.date));
+  yesterdayNews.sort((a, b) => b.date.localeCompare(a.date));
+  const processed = [...todayNews, ...yesterdayNews].slice(0, 60);
+
+  console.log('✅ 当天AI新闻: ' + todayNews.length + ' 条 + 昨日: ' + yesterdayNews.length + ' 条');
+  return processed;
 }
 function applyRealNews(newsItem) {
 newsItem.sectorIds.forEach(sectorId => {
