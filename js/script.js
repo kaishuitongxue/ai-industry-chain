@@ -785,6 +785,204 @@ const RSS_SOURCES = [
   { url: 'https://news.google.com/rss/search?q=%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6+Waymo+%E8%90%9D%E5%8D%9C%E5%BF%AB%E8%B7%91+%E6%99%BA%E9%A9%BE&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google 自动驾驶' },
 ];
 
+// ============================================
+// 新闻抓取基础设施
+// ============================================
+const FETCHED_NEWS_SET = new Set();
+const RENDERED_NEWS_TITLES = new Set();
+const NEWS_CACHE_KEY = 'ai_news_cache_v3';
+
+function loadNewsCache() {
+  try {
+    const raw = sessionStorage.getItem(NEWS_CACHE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) { return null; }
+}
+
+function saveNewsCache(news) {
+  try {
+    sessionStorage.setItem(NEWS_CACHE_KEY, JSON.stringify(news));
+  } catch (e) { /* quota exceeded */ }
+}
+
+// RSS抓取（通过rss2json API）
+async function fetchRSSFeed(source) {
+  try {
+    const apiUrl = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(source.url);
+    const resp = await fetch(apiUrl);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+    if (data.status !== 'ok') throw new Error(data.message || 'API error');
+    return (data.items || []).map(function(item) {
+      return {
+        title: (item.title || '').replace(/<[^>]*>/g, '').trim(),
+        date: item.pubDate ? new Date(item.pubDate).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
+        source: source.label,
+        link: item.link || '',
+      };
+    });
+  } catch (e) {
+    console.warn('⚠️ 新闻源获取失败 [' + source.label + ']:', e.message);
+    return [];
+  }
+}
+
+// 汇总所有RSS源
+async function fetchAllRealNews() {
+  console.log('📡 正在从 ' + RSS_SOURCES.length + ' 个信息源抓取AI新闻...');
+  const results = await Promise.allSettled(RSS_SOURCES.map(fetchRSSFeed));
+  const allNews = results.filter(function(r) { return r.status === 'fulfilled'; }).flatMap(function(r) { return r.value; });
+
+  const sevenDaysAgo = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
+  const processed = [];
+
+  for (var i = 0; i < allNews.length; i++) {
+    var news = allNews[i];
+    if (!news.title || FETCHED_NEWS_SET.has(news.title)) continue;
+    var newsDate = news.date;
+    if (newsDate < sevenDaysAgo) continue;
+    FETCHED_NEWS_SET.add(news.title);
+    var sectorIds = mapNewsToSectors(news.title);
+    if (!sectorIds) continue;
+    var sentiment = analyzeSentiment(news.title);
+    var companies = matchCompaniesInTitle(news.title, sectorIds);
+    processed.push({ title: news.title, source: news.source, date: news.date, link: news.link, sectorIds: sectorIds, sentiment: sentiment, companies: companies });
+  }
+
+  processed.sort(function(a, b) { return b.date.localeCompare(a.date); });
+  var top = processed.slice(0, 100);
+  console.log('✅ 近7天AI新闻: ' + top.length + ' 条');
+  return top;
+}
+
+// SECTOR_LAYER_MAP（层级映射）
+
+const SECTOR_KEYWORDS = {
+  'ai-chip-design': ['芯片', 'GPU', 'NVIDIA', '英伟达', 'AMD', 'NPU', 'ASIC', 'TPU', 'HBM', 'Blackwell', 'B300', 'B200', 'H200', 'H100', '昇腾', '寒武纪', '海光', '训练芯片', '推理芯片', 'AI处理器'],
+  'chip-manufacturing': ['台积电', 'TSMC', '三星', '代工', '制程', '光刻', 'foundry', '3nm', '2nm', 'EUV', '先进封装', '英特尔', 'Intel', '晶圆', '中芯', 'SMIC', '光刻机', 'CoWoS'],
+  'computing-infra': ['数据中心', '服务器', '云计算', '算力', 'data center', '液冷', '光模块', 'cloud', '基础设施', 'HPC', '智算', '超算', '算力中心', '云服务', '存储'],
+  'llm': ['大模型', 'GPT', 'Claude', 'Gemini', 'LLaMA', 'Qwen', 'DeepSeek', 'ChatGPT', 'OpenAI', '大语言模型', '通义', '文心', '豆包', '混元', '星火', '百川', 'LLM', '基座模型'],
+  'multimodal': ['多模态', '视觉', '文生图', '文生视频', 'Sora', 'Stable Diffusion', 'Midjourney', '视频生成', '语音合成', 'Runway', 'Pika', '可灵', 'DALL-E'],
+  'ai-framework': ['PyTorch', 'TensorFlow', 'JAX', 'Hugging Face', 'LangChain', '开发框架', 'LlamaIndex', 'vLLM', 'Ollama', '模型训练', 'DeepSpeed'],
+  'ai-agent': ['Agent', '智能体', 'Copilot', 'function calling', '工具调用', '自主', '多智能体', '协作', '编排', 'Bot', '自动化'],
+  'autonomous-driving': ['自动驾驶', '智能驾驶', 'Waymo', 'Robotaxi', '无人', '智驾', 'FSD', '萝卜快跑', '激光雷达', '感知'],
+  'embodied-robot': ['机器人', '人形', '具身智能', 'Optimus', 'Figure', '宇树', '傅利叶', '达闼', '机械臂', '灵巧手'],
+  'ai-medical': ['AI医疗', 'AI制药', '影像', '诊断', '药物', '医疗AI', '蛋白质', 'AlphaFold', '病理', '临床'],
+  'ai-finance': ['AI金融', '量化', '风控', '智能投顾', '反欺诈', 'fintech', '金融AI', '信贷'],
+  'ai-security': ['AI安全', '安全', '对齐', '对齐税', '红队', '幻觉', '越狱', '隐私', '监管', '合规'],
+};
+
+function mapNewsToSectors(title) {
+  const matched = [];
+  const titleLower = title.toLowerCase();
+  for (const [sectorId, keywords] of Object.entries(SECTOR_KEYWORDS)) {
+    if (keywords.some(kw => titleLower.includes(kw.toLowerCase()))) {
+      matched.push(sectorId);
+    }
+  }
+  return matched.length > 0 ? matched : null;
+}
+
+const SECTOR_LAYER_MAP = {};
+industryData.forEach(function(item) { SECTOR_LAYER_MAP[item.id] = item.layer; });
+
+function getSectorLayer(sectorId) {
+  return SECTOR_LAYER_MAP[sectorId] || null;
+}
+
+// 公司关键词索引
+const COMPANY_INDEX = [];
+let _companyIndexBuilt = false;
+
+function ensureCompanyIndex() {
+  if (_companyIndexBuilt) return;
+  _companyIndexBuilt = true;
+  const seen = new Set();
+  industryData.forEach(function(item) {
+    item.companies.forEach(function(c) {
+      var key = c.name + (c.ticker || '');
+      if (seen.has(key)) return;
+      seen.add(key);
+      COMPANY_INDEX.push({
+        keywords: extractCompanyKeywords(c.name),
+        name: c.name,
+        ticker: c.ticker || '',
+        country: c.country || '',
+        sectorId: item.id,
+      });
+    });
+  });
+  COMPANY_INDEX.sort(function(a, b) { return b.keywords[0].length - a.keywords[0].length; });
+}
+
+// 情感分析
+const SENTIMENT_KW = [
+  { words: ['突破', '发布', '超越', '领先', '新高', '上市', '获投', '融资', '利好', '增长', '合作', '落地', '开源', '免费', '升级', '获奖', '通过', '获批', '中标'], impact: 0.3 },
+  { words: ['暴跌', '裁员', '亏损', '罚款', '调查', '诉讼', '违规', '暂停', '下架', '召回', '暴雷', '造假', '危机', '延迟', '取消', '失败', '风险'], impact: -0.2 },
+  { words: ['收购', '合并', '投资', '布局', '进入', '推出', '计划', '扩张', 'IPO', '融资', '获投', '战略合作', '联手', '携手', '宣布', '进军', '拓展', '达成', '签约'], impact: 0.2 },
+];
+
+function analyzeSentiment(title) {
+  var score = 0;
+  for (var i = 0; i < SENTIMENT_KW.length; i++) {
+    var group = SENTIMENT_KW[i];
+    if (group.words.some(function(w) { return title.indexOf(w) >= 0; })) score += group.impact;
+  }
+  return +score.toFixed(2);
+}
+
+function matchCompaniesInTitle(title, sectorIds) {
+  ensureCompanyIndex();
+  if (!title) return [];
+  var matched = [];
+  var titleLower = title.toLowerCase();
+  var sectorSet = new Set(sectorIds || []);
+  for (var i = 0; i < COMPANY_INDEX.length; i++) {
+    var entry = COMPANY_INDEX[i];
+    if (!sectorSet.has(entry.sectorId)) continue;
+    for (var j = 0; j < entry.keywords.length; j++) {
+      var kw = entry.keywords[j];
+      if (kw.length < 2) continue;
+      if (titleLower.indexOf(kw.toLowerCase()) >= 0) {
+        if (!matched.find(function(m) { return m.name === entry.name; })) {
+          matched.push({ name: entry.name, ticker: entry.ticker, country: entry.country });
+        }
+        break;
+      }
+    }
+  }
+  return matched.slice(0, 4);
+}
+
+const COMPANY_ALIASES = {
+  'Tesla FSD': ['特斯拉'],
+  'Waymo (Alphabet)': ['Waymo', '谷歌'],
+  '华为海思': ['华为昇腾', '华为', '昇腾'],
+  'Google': ['谷歌'],
+  'Amazon': ['亚马逊', 'AWS'],
+  'Microsoft': ['微软'],
+  'Apple': ['苹果'],
+  'Meta': ['Facebook', '脸书'],
+  '台积电 TSMC': ['台积电'],
+  '中芯国际 SMIC': ['中芯国际', '中芯'],
+  '百度 Apollo': ['百度', '萝卜快跑'],
+  'Figure AI': ['Figure'],
+};
+
+function extractCompanyKeywords(companyName) {
+  var keywords = [companyName];
+  var clean = companyName.replace(/\(.*?\)/g, '').trim();
+  if (clean !== companyName && clean.length >= 2) keywords.push(clean);
+  var parts = clean.split(/\s+/);
+  parts.forEach(function(p) {
+    if (p.length >= 3 && keywords.indexOf(p) < 0) keywords.push(p);
+  });
+  var aliases = COMPANY_ALIASES[companyName] || [];
+  aliases.forEach(function(a) { if (keywords.indexOf(a) < 0) keywords.push(a); });
+  return keywords;
+}
+
+
 
 // ============================================
 // 多源投研报告抓取系统
@@ -793,6 +991,22 @@ const RESEARCH_CACHE_KEY = 'ai_research_cache_v3';
 
 // --- 源1：东方财富（已有，保留） ---
 const EM_BASE = 'https://reportapi.eastmoney.com/report/list';
+
+
+const AI_RESEARCH_KEYWORDS = [
+  'AI', '人工智能', '大模型', 'GPT', 'ChatGPT', 'OpenAI', 'Claude', 'Gemini',
+  '智能', '机器学习', '深度学习', '神经网络', '算力', 'GPU', '芯片',
+  '自动驾驶', '智能驾驶', '机器人', '人形', '具身智能', 'NLP',
+  'AIGC', '生成式', '多模态', 'LLM', 'RAG', '大语言', 'Agent',
+  '半导体', '光刻', '制程', 'HBM', '英伟达', 'NVIDIA', '台积电',
+  '数据标注', '向量', 'embedding', '模型训练', '推理', '微调',
+  '视觉', '语音', '计算机视觉', '量化', '智能制造', '数字化'
+];
+
+function isAIResearch(title, summary) {
+  const text = ((title || '') + ' ' + (summary || '')).toLowerCase();
+  return AI_RESEARCH_KEYWORDS.some(kw => text.includes(kw.toLowerCase()));
+}
 
 async function fetchEastmoneyReports(pageNo = 1) {
   try {
