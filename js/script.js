@@ -776,449 +776,137 @@ const RSS_SOURCES = [
 { url: 'https://news.google.com/rss/search?q=AI%E5%8C%BB%E7%96%97+AI%E9%87%91%E8%9E%8D+AI%E6%95%99%E8%82%B2+AIGC&hl=zh-CN&gl=CN&ceid=CN:zh-Hans&when:24h', label: 'Google AI应用' },
 { url: 'https://news.google.com/rss/search?q=NVIDIA+%E8%8B%B1%E4%BC%9F%E8%BE%BE+TSMC+%E5%8F%B0%E7%A7%AF%E7%94%B5+AI&hl=zh-CN&gl=CN&ceid=CN:zh-Hans&when:24h', label: 'Google AI芯片' },
 ];
-const RESEARCH_CACHE_KEY = 'ai_research_cache_v2';
+
+
+// ============================================
+// 多源投研报告抓取系统
+// ============================================
+const RESEARCH_CACHE_KEY = 'ai_research_cache_v3';
+
+// --- 源1：东方财富（已有，保留） ---
 const EM_BASE = 'https://reportapi.eastmoney.com/report/list';
-const AI_RESEARCH_KEYWORDS = [
-'AI', '人工智能', '大模型', 'GPT', 'ChatGPT', 'OpenAI', 'Claude', 'Gemini',
-'智能', '机器学习', '深度学习', '神经网络', '算力', 'GPU', '芯片',
-'自动驾驶', '智能驾驶', '机器人', '人形', '具身智能', 'NLP',
-'AIGC', '生成式', '多模态', 'LLM', 'RAG', '大语言', 'Agent',
-'半导体', '光刻', '制程', 'HBM', '英伟达', 'NVIDIA', '台积电',
-'数据标注', '向量', 'embedding', '模型训练', '推理', '微调',
-'视觉', '语音', '计算机视觉', '量化', '智能制造', '数字化'
-];
-function isAIResearch(title, summary) {
-const text = ((title || '') + ' ' + (summary || '')).toLowerCase();
-return AI_RESEARCH_KEYWORDS.some(kw => text.includes(kw.toLowerCase()));
-}
-const SECTOR_KEYWORDS = {
-'ai-chip-design': ['芯片', 'GPU', 'NVIDIA', '英伟达', 'AMD', 'NPU', 'ASIC', 'TPU', 'chip', '半导体', 'HBM', 'Blackwell', 'B300', 'B200', 'H200', 'H100', 'Groq', 'Cerebras', '算力卡', 'AI加速', '加速卡', '昇腾', '寒武纪', '海光', '摩尔线程', '壁仞', '天数智芯', 'Graphcore', '训练芯片', '推理芯片', 'AI处理器', 'Neural', '神经'],
-'chip-manufacturing': ['台积电', 'TSMC', '三星', '代工', '制程', '光刻', 'foundry', '2nm', '3nm', '5nm', 'EUV', '先进封装', '英特尔', 'Intel', '晶圆', 'fab', '制造', '中芯', 'SMIC', '光刻机', '刻蚀', '薄膜', '离子注入', 'CoWoS', '先进制程', '产能', '流片'],
-'computing-infra': ['数据中心', '服务器', '云计算', '算力', 'data center', '超大规模', '液冷', '光模块', 'GPU集群', 'cloud', 'infrastructure', '基础设施', 'HPC', 'AIDC', '智算', '超算', '算力中心', '云服务', '存储', '分布式', '边缘计算', '调度', '集群', '机房', '带宽'],
-'data-labeling': ['数据标注', '标注平台', '数据清洗', 'data labeling', '数据采集', '数据治理', '数据质量', '标注工具', '众包标注', '数据安全', '隐私计算', '联邦学习'],
-'synthetic-data': ['合成数据', '训练数据', 'synthetic data', '数据生成', '仿真数据', '数据增强', '虚拟数据', '模拟数据', '数据合成', 'World Model', '世界模型'],
-'llm': ['大模型', 'GPT', 'Claude', 'Gemini', 'LLaMA', 'Qwen', 'DeepSeek', 'Llama', 'ChatGPT', 'OpenAI', '大语言模型', '预训练', 'SFT', 'o3', 'o4', 'GPT-5', 'GPT-4', 'language model', 'LLM', '语言模型', 'LLaDA', 'Mistral', 'Grok', 'xAI', 'Anthropic', 'Meta', '通义', '文心', 'ERNIE', '豆包', '混元', '星火', '百川', 'MaaS', '模型即服务', '基座模型', 'Foundation', '对齐', 'RLHF', 'MoE', '万亿参数', '上下文', '长文本', '推理模型'],
-'multimodal': ['多模态', '视觉', '语音识别', '文生图', '文生视频', 'Sora', 'Stable Diffusion', 'Midjourney', '视觉语言', 'image generation', 'computer vision', 'CV', '视频生成', '语音合成', 'Runway', 'Pika', 'Kling', '可灵', '即梦', 'DALL-E', 'Flux', '图生', '语音克隆', '数字人', '动作捕捉', '表情', '3D生成'],
-'ai-framework': ['PyTorch', 'TensorFlow', 'JAX', 'Hugging Face', '开源模型', 'framework', 'LangChain', '开发框架', 'LlamaIndex', 'vLLM', 'Ollama', '模型训练', '分布式训练', 'DeepSpeed', 'Megatron', 'Colossal', 'Ray', 'MLflow', 'Kubeflow'],
-'vector-db': ['向量数据库', 'Milvus', 'Pinecone', 'Weaviate', 'RAG', '检索增强', 'embedding', 'vector', '语义搜索', '知识库', 'Chroma', 'Qdrant', 'Elasticsearch', '向量检索', '知识图谱', '召回'],
-'mlops': ['MLOps', '模型部署', '模型监控', 'fine-tune', '微调', '推理优化', 'inference', '模型优化', '量化', '剪枝', '蒸馏', '模型压缩', 'Triton', 'TensorRT', 'ONNX', '模型评估', 'A/B测试'],
-'ai-agent': ['Agent', '智能体', 'Copilot', 'Manus', 'AutoGPT', '自主', 'function calling', '工具调用', 'agentic', 'assistant', 'workflow', '自动化', '多智能体', '协作', '编排', 'RPA', '低代码', '无代码', '流程', 'Bot', '对话'],
-'ai-coding': ['编程', 'Cursor', 'Devin', 'GitHub Copilot', '代码生成', 'coding assistant', 'code generation', 'IDE', 'AI编程', 'Copilot', '代码补全', 'Codex', '通义灵码', '代码审查', '重构', 'debug', '测试生成', 'SWE-bench'],
-'ai-healthcare': ['医疗', '制药', '药物', 'FDA', '诊断', 'healthcare', '医学影像', '蛋白质', 'AlphaFold', '药物研发', 'drug', 'clinical', 'biotech', '基因组', '病理', '影像', '手术', '康复', '脑机', '健康管理', '疫苗', '临床试验', '医疗器械'],
-'ai-finance': ['金融', '量化', '风控', 'fintech', '投研', '信贷', 'trading', 'banking', '银行', '保险', '支付', 'KYC', '反欺诈', '智能投顾', '风险管理', '征信', '消费金融', '供应链金融'],
-'ai-education': ['教育', '学习', 'education', '辅导', '个性化学习', '在线教育', 'tutoring', '题库', '作业', '考试', '培训', '知识付费', 'AI教师', '自适应', '学情'],
-'ai-content': ['AIGC', '内容生成', '版权', 'deepfake', '视频生成', '音乐生成', '数字人', '虚拟人', '生成式', 'AI生成', '创作者', '营销', '文案', '设计', '广告', '短视频', '直播', '媒体', '出版'],
-'embodied-ai': ['机器人', '人形机器人', 'Figure', 'Tesla Bot', 'Optimus', '具身智能', '机械臂', 'Boston Dynamics', 'robotics', 'robot', '人形', '自动化', '优必选', '宇树', '智元', '傅利叶', '达闼', '小鹏', '追觅', '灵巧手', '关节', '伺服', '步态', '抓取', '物流', '仓储', '工厂'],
-'autonomous-driving': ['自动驾驶', 'L4', 'FSD', 'Waymo', '特斯拉', '激光雷达', '感知', '无人驾驶', 'self-driving', 'autonomous vehicle', '智能驾驶', 'robotaxi', '智驾', 'ADAS', '毫米波', '摄像头', '域控制器', '高精地图', '车路协同', 'V2X', '泊车', 'NOA', 'NGP', '端到端', 'Occupancy', 'BEV'],
-};
-const SENTIMENT_KW = [
-{ words: ['突破', '发布', '融资', '上市', '获批', '超预期', '创新高', '增长', '合作', '开源', '领先', '重大', '里程碑', '刷新纪录', '暴涨', '扩大', '升级', '营收超预期', '打破纪录', '领先全球', '重磅', '首发', '首创', '量产', '商用', '落地', '加速', '飙升', '翻倍', '夺冠', '第一', '夺冠', '获奖', '认证'], impact: 0.3 },
-{ words: ['监管', '限制', '制裁', '罚款', '裁员', '下滑', '亏损', '诉讼', '召回', '漏洞', '事故', '禁令', '调查', '处罚', '疲软', '挑战', '推迟', '延期', '下架', '暴跌', '违规', '侵权', '纠纷', '爆雷', '崩盘', '危机', '失败', '质疑', '争议', '警告', '风险'], impact: -0.2 },
-{ words: ['收购', '合并', '投资', '布局', '进入', '推出', '计划', '扩张', 'IPO', '融资', '获投', '战略合作', '联手', '携手', '宣布', '布局', '进军', '拓展', '达成', '签约', '落地'], impact: 0.2 },
-];
-const FETCHED_NEWS_SET = new Set();
-const RENDERED_NEWS_TITLES = new Set();
-const NEWS_CACHE_KEY = 'ai_news_cache_v2';
-function loadNewsCache() {
-try {
-const raw = sessionStorage.getItem(NEWS_CACHE_KEY);
-return raw ? JSON.parse(raw) : null;
-} catch (e) { return null; }
-}
-function saveNewsCache(news) {
-try {
-sessionStorage.setItem(NEWS_CACHE_KEY, JSON.stringify(news));
-} catch (e) { /* quota exceeded, ignore */ }
-}
-const SECTOR_LAYER_MAP = {};
-industryData.forEach(item => { SECTOR_LAYER_MAP[item.id] = item.layer; });
-function getSectorLayer(sectorId) {
-return SECTOR_LAYER_MAP[sectorId] || null;
-}
-const COMPANY_ALIASES = {
-'Tesla FSD': ['特斯拉'],
-'Waymo (Alphabet)': ['Waymo', '谷歌'],
-'华为海思': ['华为昇腾', '华为', '昇腾'],
-'Google': ['谷歌'],
-'Amazon': ['亚马逊', 'AWS'],
-'Microsoft': ['微软'],
-'Apple': ['苹果'],
-'Meta': ['Facebook', '脸书'],
-'台积电 TSMC': ['台积电'],
-'中芯国际 SMIC': ['中芯国际', '中芯'],
-'百度 Apollo': ['百度', '萝卜快跑'],
-'Figure AI': ['Figure'],
-};
-function extractCompanyKeywords(companyName) {
-const keywords = [companyName];
-const clean = companyName.replace(/\(.*?\)/g, '').trim();
-if (clean !== companyName && clean.length >= 2) keywords.push(clean);
-const parts = clean.split(/\s+/);
-parts.forEach(p => {
-if (p.length >= 3 && !keywords.includes(p)) keywords.push(p);
-});
-const aliases = COMPANY_ALIASES[companyName] || [];
-aliases.forEach(a => { if (!keywords.includes(a)) keywords.push(a); });
-return keywords;
-}
-function matchCompaniesInTitle(title, sectorIds) {
-ensureCompanyIndex();
-if (!title) return [];
-const matched = [];
-const titleLower = title.toLowerCase();
-const sectorSet = new Set(sectorIds || []);
-for (const entry of COMPANY_INDEX) {
-if (!sectorSet.has(entry.sectorId)) continue;
-for (const kw of entry.keywords) {
-if (kw.length < 2) continue;
-if (titleLower.includes(kw.toLowerCase())) {
-if (!matched.find(m => m.name === entry.name)) {
-matched.push({ name: entry.name, ticker: entry.ticker, country: entry.country });
-}
-break;
-}
-}
-}
-return matched.slice(0, 4);
-}
-const COMPANY_INDEX = [];
-let _companyIndexBuilt = false;
-function ensureCompanyIndex() {
-if (_companyIndexBuilt) return;
-_companyIndexBuilt = true;
-const seen = new Set();
-industryData.forEach(item => {
-item.companies.forEach(c => {
-const key = c.name + (c.ticker || '');
-if (seen.has(key)) return;
-seen.add(key);
-COMPANY_INDEX.push({
-keywords: extractCompanyKeywords(c.name),
-name: c.name,
-ticker: c.ticker || '',
-country: c.country || '',
-sectorId: item.id,
-});
-});
-});
-COMPANY_INDEX.sort((a, b) => b.keywords[0].length - a.keywords[0].length);
-}
-let currentPage = 'overview';
-function mapNewsToSectors(title) {
-const matched = [];
-for (const [sectorId, keywords] of Object.entries(SECTOR_KEYWORDS)) {
-if (keywords.some(kw => title.toLowerCase().includes(kw.toLowerCase()))) {
-matched.push(sectorId);
-}
-}
-return matched.length > 0 ? matched : null;
-}
-function analyzeSentiment(title) {
-let score = 0;
-for (const group of SENTIMENT_KW) {
-if (group.words.some(w => title.includes(w))) score += group.impact;
-}
-return +score.toFixed(2);
-}
-async function fetchRSSFeed(source) {
-try {
-const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(source.url)}`;
-const resp = await fetch(apiUrl);
-if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-const data = await resp.json();
-if (data.status !== 'ok') throw new Error(data.message || 'API error');
-return (data.items || []).map(item => ({
-title: item.title?.replace(/<[^>]*>/g, '').trim() || '',
-date: item.pubDate ? new Date(item.pubDate).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
-source: source.label,
-link: item.link || '',
-}));
-} catch (e) {
-console.warn(`⚠️ 新闻源获取失败 [${source.label}]:`, e.message);
-return [];
-}
-}
-async function fetchAllRealNews() {
-  console.log('📡 正在抓取当天最新AI行业新闻...');
-  const results = await Promise.allSettled(RSS_SOURCES.map(fetchRSSFeed));
-  const allNews = results.filter(r => r.status === 'fulfilled').flatMap(r => r.value);
 
-  // 当天日期过滤
-  const today = new Date().toISOString().slice(0, 10);
-  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
-  const todayNews = [];
-  const yesterdayNews = [];
+async function fetchEastmoneyReports(pageNo = 1) {
+  try {
+    const url = `${EM_BASE}?cb=&industryCode=*&pageSize=50&pageNo=${pageNo}&fields=title,orgName,orgSName,publishDate,stockName,stockCode,summary,infoCode&qType=0&beginTime=2026-01-01&endTime=`;
+    const resp = await fetch(url, { headers: { 'Referer': 'https://data.eastmoney.com/' } });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    return (data.data || []).map(r => ({
+      title: (r.title || '').trim(),
+      orgName: r.orgName || '',
+      orgSName: r.orgSName || '',
+      date: (r.publishDate || '').slice(0, 10),
+      stockName: r.stockName || '',
+      stockCode: r.stockCode || '',
+      ticker: emCodeToTicker(r.stockCode || ''),
+      summary: stripHTML(r.summary || '').slice(0, 300),
+      link: r.infoCode ? `https://data.eastmoney.com/report/zw_industry.jshtml?infocode=${r.infoCode}` : '',
+      infoCode: r.infoCode || '',
+      source: r.orgSName || r.orgName || '东方财富',
+      apiSource: '东方财富',
+    }));
+  } catch (e) {
+    console.warn('⚠️ 东方财富研报API失败:', e.message);
+    return [];
+  }
+}
 
-  for (const news of allNews) {
-    if (!news.title || FETCHED_NEWS_SET.has(news.title)) continue;
-    const newsDate = news.date;
-    if (newsDate !== today && newsDate !== yesterday) continue;
-    FETCHED_NEWS_SET.add(news.title);
-    const sectorIds = mapNewsToSectors(news.title);
-    if (!sectorIds) continue;
-    const sentiment = analyzeSentiment(news.title);
-    const companies = matchCompaniesInTitle(news.title, sectorIds);
-    const item = { ...news, sectorIds, sentiment, companies };
-    if (newsDate === today) todayNews.push(item);
-    else yesterdayNews.push(item);
+// --- 源2：同花顺研报 ---
+async function fetch10jqkaReports(pageNo = 1) {
+  try {
+    const url = `https://yuanbao.10jqka.com.cn/open_api/research/reportList?page=${pageNo}&size=30&type=1`;
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    return (data.data?.list || data.data || []).map(r => ({
+      title: (r.title || r.report_title || '').trim(),
+      orgName: r.org_name || r.orgName || '',
+      orgSName: r.org_short || r.orgSName || '',
+      date: (r.date || r.publish_date || r.publishDate || '').slice(0, 10),
+      stockName: r.stock_name || r.stockName || '',
+      stockCode: (r.stock_code || r.stockCode || '').toString(),
+      ticker: emCodeToTicker((r.stock_code || r.stockCode || '').toString()),
+      summary: stripHTML(r.summary || r.abstract || '').slice(0, 300),
+      link: r.url || r.link || '',
+      infoCode: r.id || r.report_id || '',
+      source: r.org_short || r.orgSName || r.orgName || '同花顺',
+      apiSource: '同花顺',
+    }));
+  } catch (e) {
+    console.warn('⚠️ 同花顺研报API失败:', e.message);
+    return [];
+  }
+}
+
+// --- 源3：东方财富-行业研报（不同查询维度） ---
+async function fetchEMIndustryReports() {
+  try {
+    const today = new Date().toISOString().slice(0, 10);
+    const url = `${EM_BASE}?cb=&industryCode=*&pageSize=30&pageNo=1&fields=title,orgName,orgSName,publishDate,stockName,stockCode,summary,infoCode&qType=1&beginTime=2026-01-01&endTime=`;
+    const resp = await fetch(url, { headers: { 'Referer': 'https://data.eastmoney.com/' } });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    return (data.data || []).map(r => ({
+      title: (r.title || '').trim(),
+      orgName: r.orgName || '',
+      orgSName: r.orgSName || '',
+      date: (r.publishDate || '').slice(0, 10),
+      stockName: r.stockName || '',
+      stockCode: r.stockCode || '',
+      ticker: emCodeToTicker(r.stockCode || ''),
+      summary: stripHTML(r.summary || '').slice(0, 300),
+      link: r.infoCode ? `https://data.eastmoney.com/report/zw_industry.jshtml?infocode=${r.infoCode}` : '',
+      infoCode: r.infoCode || '',
+      source: r.orgSName || r.orgName || '东方财富-行业',
+      apiSource: '东方财富-行业',
+    }));
+  } catch (e) {
+    console.warn('⚠️ 东方财富行业研报失败:', e.message);
+    return [];
+  }
+}
+
+// --- 汇总多源研报 ---
+const RESEARCH_SOURCES = [
+  { name: '东方财富', fetch: fetchEastmoneyReports, pages: 3 },
+  { name: '东方财富-行业', fetch: fetchEMIndustryReports, pages: 1 },
+  { name: '同花顺', fetch: fetch10jqkaReports, pages: 2 },
+];
+
+async function fetchAllResearch() {
+  console.log('📋 正在从多个数据源抓取券商研报...');
+  const allResults = [];
+
+  for (const src of RESEARCH_SOURCES) {
+    try {
+      const pageResults = await Promise.all(
+        Array.from({ length: src.pages }, (_, i) => src.fetch(i + 1))
+      );
+      const flat = pageResults.flat();
+      console.log(`  ${src.name}: ${flat.length} 篇`);
+      allResults.push(...flat);
+    } catch (e) {
+      console.warn(`  ${src.name}: 失败`);
+    }
   }
 
-  // 今天的在前，昨天的在后
-  todayNews.sort((a, b) => b.date.localeCompare(a.date));
-  yesterdayNews.sort((a, b) => b.date.localeCompare(a.date));
-  const processed = [...todayNews, ...yesterdayNews].slice(0, 60);
-
-  console.log('✅ 当天AI新闻: ' + todayNews.length + ' 条 + 昨日: ' + yesterdayNews.length + ' 条');
-  return processed;
-}
-function applyRealNews(newsItem) {
-newsItem.sectorIds.forEach(sectorId => {
-const item = industryData.find(i => i.id === sectorId);
-if (!item) return;
-item.newsFactors.push({
-date: newsItem.date,
-event: `[${newsItem.source}] ${newsItem.title}`,
-impact: newsItem.sentiment,
-});
-if (item.newsFactors.length > 10) item.newsFactors = item.newsFactors.slice(-10);
-const newsImpact = item.newsFactors.reduce((s, nf) => s + nf.impact, 0);
-item.scarcity = Math.min(10, Math.max(1, +(9.0 + newsImpact * 0.5).toFixed(1)));
-item.value = Math.min(10, Math.max(1, +(9.0 + newsImpact * 0.3).toFixed(1)));
-item.composite = +(item.scarcity * 0.4 + item.value * 0.35 + item.barrier * 0.25).toFixed(1);
-});
-addNewsCard(newsItem.title, newsItem.source, newsItem.date, newsItem.sectorIds, newsItem.sentiment, newsItem.link || '', newsItem.companies || []);
-if (newsItem.sentiment !== 0) {
-showToast(`📡 真实新闻·${newsItem.sentiment > 0 ? '利好' : '利空'}：${newsItem.title.slice(0, 30)}... (${newsItem.sentiment > 0 ? '+' : ''}${newsItem.sentiment.toFixed(1)})`);
-}
-}
-async function runRealNewsCycle(forceRefresh = false) {
-if (!_prefetchedNews && !forceRefresh) {
-try {
-_prefetchedNews = await fetchAllRealNews();
-if (_prefetchedNews && _prefetchedNews.length > 0) saveNewsCache(_prefetchedNews);
-} catch(e) {}
-}
-if (!forceRefresh && _prefetchedNews && _prefetchedNews.length > 0) {
-console.log(`📡 预抓取就绪，${_prefetchedNews.length} 条新闻即时加载`);
-_prefetchedNews.forEach(news => { RENDERED_NEWS_TITLES.add(news.title); applyRealNews(news); });
-_prefetchedNews = null;
-sortNewsByDate();
-refreshAll();
-refreshNewsInBackground();
-return;
-}
-if (!forceRefresh) {
-const cached = loadNewsCache();
-if (cached && cached.length > 0) {
-console.log(`📡 从缓存加载 ${cached.length} 条新闻`);
-cached.forEach(news => { RENDERED_NEWS_TITLES.add(news.title); applyRealNews(news); });
-sortNewsByDate();
-refreshAll();
-refreshNewsInBackground();
-return;
-}
-}
-const allNews = await fetchAllRealNews();
-if (allNews.length === 0) {
-console.log('⚠️ 未抓取到真实新闻，使用模拟降级');
-runFallbackSim();
-return;
-}
-saveNewsCache(allNews);
-allNews.forEach(news => { RENDERED_NEWS_TITLES.add(news.title); applyRealNews(news); });
-sortNewsByDate();
-refreshAll();
-}
-async function refreshNewsInBackground() {
-try {
-const allNews = await fetchAllRealNews();
-if (allNews.length === 0) return;
-saveNewsCache(allNews);
-let newCount = 0;
-for (const news of allNews) {
-if (RENDERED_NEWS_TITLES.has(news.title)) continue;
-RENDERED_NEWS_TITLES.add(news.title);
-applyRealNews(news);
-newCount++;
-if (newCount >= 10) break;
-}
-if (newCount > 0) {
-sortNewsByDate();
-refreshAll();
-const timeStr = new Date().toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
-showToast(`📡 ${timeStr} 更新 ${newCount} 条AI情报`);
-}
-const updateEl = $('#newsUpdateTime');
-if (updateEl) {
-updateEl.textContent = new Date().toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit'});
-}
-} catch (e) { /* silent */ }
-}
-function runFallbackSim() {
-const item = industryData[Math.floor(Math.random() * industryData.length)];
-const impact = +(0.2 + Math.random() * 0.3).toFixed(1);
-item.newsFactors.push({
-date: new Date().toISOString().slice(0, 10),
-event: `[行业动态] ${item.name}赛道持续活跃`,
-impact,
-});
-if (item.newsFactors.length > 10) item.newsFactors = item.newsFactors.slice(-10);
-const ni = item.newsFactors.reduce((s, nf) => s + nf.impact, 0);
-item.scarcity = Math.min(10, Math.max(1, +(9.0 + ni * 0.5).toFixed(1)));
-item.value = Math.min(10, Math.max(1, +(9.0 + ni * 0.3).toFixed(1)));
-item.composite = +(item.scarcity * 0.4 + item.value * 0.35 + item.barrier * 0.25).toFixed(1);
-addNewsCard(`[行业动态] ${item.name}赛道持续活跃`, '行业动态', new Date().toISOString().slice(0, 10), [item.id], impact, '', []);
-refreshAll();
-}
-function startRealNewsFeed() {
-setTimeout(() => runRealNewsCycle(), 2000);
-setInterval(() => refreshNewsInBackground(), 60 * 1000);
-setInterval(() => runFallbackSim(), 3 * 60 * 1000);
-}
-function getSectorName(sectorId) {
-const item = industryData.find(i => i.id === sectorId);
-return item ? item.name : sectorId;
-}
-function addNewsCard(title, source, date, sectorIds, sentiment, link, companies) {
-const container = $('#newsCards');
-const empty = container.querySelector('.news-empty');
-if (empty) empty.remove();
-const card = document.createElement('div');
-card.className = 'news-card';
-card.setAttribute('data-sector-ids', JSON.stringify(sectorIds || []));
-card.setAttribute('data-link', link || '');
-card.setAttribute('data-date', date);
-if (link) {
-card.style.cursor = 'pointer';
-card.title = '点击查看原文';
-card.addEventListener('click', (e) => {
-if (e.target.closest('.news-sector-tag') || e.target.closest('.news-sentiment') || e.target.closest('.news-company-tag')) return;
-window.open(link, '_blank', 'noopener');
-});
-}
-const layers = new Set();
-(sectorIds || []).forEach(id => {
-const l = getSectorLayer(id);
-if (l) layers.add(l);
-});
-card.setAttribute('data-layers', JSON.stringify([...layers]));
-const sentimentLabel = sentiment > 0 ? '利好' : sentiment < 0 ? '利空' : '中性';
-const sentimentCls = sentiment > 0 ? 'positive' : sentiment < 0 ? 'negative' : 'neutral';
-const sign = sentiment > 0 ? '+' : '';
-const sectorTags = (sectorIds || []).slice(0, 3).map(id =>
-`<span class="news-sector-tag">${getSectorName(id)}</span>`
-).join('');
-const companyTags = (companies || []).map(c => {
-const tickerSpan = c.ticker ? `<span class="news-company-ticker">${escapeHTML(c.ticker)}</span>` : '';
-return `<span class="news-company-tag" title="${escapeHTML(c.name)}${c.ticker ? ' · ' + c.ticker : ''}">${c.country} ${escapeHTML(c.name)}${tickerSpan}</span>`;
-}).join('');
-const linkIcon = link ? ' <span style="font-size:10px;opacity:0.5">🔗</span>' : '';
-card.innerHTML = `
-<div class="news-card-header">
-<span class="news-source-badge">${escapeHTML(source)}</span>
-<span class="news-date">${date}</span>
-</div>
-<div class="news-card-title">${escapeHTML(title)}${linkIcon}</div>
-<div class="news-card-footer">
-${sectorTags}
-${companyTags}
-<span class="news-sentiment ${sentimentCls}">${sign}${sentiment.toFixed(1)} ${sentimentLabel}</span>
-</div>
-`;
-if (currentPage !== 'overview' && currentPage !== 'ranking') {
-if (!layers.has(currentPage)) {
-card.style.display = 'none';
-}
-}
-const existingCards = container.querySelectorAll('.news-card');
-let inserted = false;
-for (const existing of existingCards) {
-const existingDate = existing.getAttribute('data-date') || '';
-if (date >= existingDate) {
-container.insertBefore(card, existing);
-inserted = true;
-break;
-}
-}
-if (!inserted) {
-container.appendChild(card);
-}
-const cards = container.querySelectorAll('.news-card');
-if (cards.length > 80) {
-cards[cards.length - 1].remove();
-}
-RENDERED_NEWS_TITLES.add(title);
-}
-function filterNewsByLayer(layer) {
-currentPage = layer;
-$$('.news-card').forEach(card => {
-if (layer === 'all' || layer === 'news' || layer === 'research' || layer === 'overview' || layer === 'ranking') {
-card.style.display = '';
-return;
-}
-try {
-const layers = JSON.parse(card.getAttribute('data-layers') || '[]');
-card.style.display = layers.includes(layer) ? '' : 'none';
-} catch (e) {
-card.style.display = '';
-}
-});
-}
-function stripHTML(html) {
-if (!html) return '';
-return html.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ').replace(/\s+/g, ' ').trim();
-}
-function emCodeToTicker(stockCode) {
-if (!stockCode || stockCode.length !== 6) return null;
-const code = stockCode.trim();
-if (code.startsWith('6')) return code + '.SS';
-if (code.startsWith('0') || code.startsWith('3')) return code + '.SZ';
-if (code.startsWith('4') || code.startsWith('8')) return code + '.BJ';
-return code + '.SS';
-}
-async function fetchEastmoneyReports(pageNo = 1) {
-try {
-const url = `${EM_BASE}?cb=&industryCode=*&pageSize=50&pageNo=${pageNo}&fields=title,orgName,orgSName,publishDate,stockName,stockCode,summary,infoCode&qType=0&beginTime=2026-01-01&endTime=`;
-const resp = await fetch(url, { headers: { 'Referer': 'https://data.eastmoney.com/' } });
-if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-const data = await resp.json();
-return (data.data || []).map(r => ({
-title: (r.title || '').trim(),
-orgName: r.orgName || '',
-orgSName: r.orgSName || '',
-date: (r.publishDate || '').slice(0, 10),
-stockName: r.stockName || '',
-stockCode: r.stockCode || '',
-ticker: emCodeToTicker(r.stockCode || ''),
-summary: stripHTML(r.summary || '').slice(0, 300),
-link: r.infoCode ? `https://data.eastmoney.com/report/zw_industry.jshtml?infocode=${r.infoCode}` : '',
-infoCode: r.infoCode || '',
-source: r.orgSName || r.orgName || '券商研报',
-}));
-} catch (e) {
-console.warn('⚠️ 东方财富研报API失败:', e.message);
-return [];
-}
-}
-async function fetchAllResearch() {
-console.log('📋 正在从东方财富抓取券商研报...');
-const results = await Promise.all([1, 2, 3].map(p => fetchEastmoneyReports(p)));
-const all = results.flat();
-const seen = new Set();
-const filtered = [];
-for (const r of all) {
-if (!r.title || seen.has(r.title)) continue;
-if (!isAIResearch(r.title, r.summary)) continue;
-seen.add(r.title);
-const sectorIds = mapNewsToSectors(r.title + ' ' + r.summary);
-const companies = matchCompaniesInTitle(r.title + ' ' + r.summary, sectorIds || []);
-const sentiment = analyzeSentiment(r.title);
-filtered.push({ ...r, sectorIds, companies, sentiment });
-}
-filtered.sort((a, b) => b.date.localeCompare(a.date));
-console.log(`✅ AI相关券商研报: ${filtered.length} 篇（来自 ${all.length} 篇总研报）`);
-filtered.forEach(r => { if (r.ticker) researchTickers.add(r.ticker); });
-return filtered.slice(0, 50);
+  // 去重+AI筛选
+  const seen = new Set();
+  const filtered = [];
+  for (const r of allResults) {
+    if (!r.title || seen.has(r.title)) continue;
+    if (!isAIResearch(r.title, r.summary)) continue;
+    seen.add(r.title);
+    const sectorIds = mapNewsToSectors(r.title + ' ' + r.summary);
+    const companies = matchCompaniesInTitle(r.title + ' ' + r.summary, sectorIds || []);
+    const sentiment = analyzeSentiment(r.title);
+    filtered.push({ ...r, sectorIds, companies, sentiment });
+  }
+  filtered.sort((a, b) => b.date.localeCompare(a.date));
+  console.log(`✅ AI相关券商研报: ${filtered.length} 篇（来自 ${allResults.length} 篇总研报，${RESEARCH_SOURCES.length}个数据源）`);
+  filtered.forEach(r => { if (r.ticker) researchTickers.add(r.ticker); });
+  return filtered.slice(0, 60);
 }
 async function fetchReportDigest(infoCode) {
 if (!infoCode) return '';
