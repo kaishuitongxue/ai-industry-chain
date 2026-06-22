@@ -1008,6 +1008,46 @@ function isAIResearch(title, summary) {
   return AI_RESEARCH_KEYWORDS.some(kw => text.includes(kw.toLowerCase()));
 }
 
+
+function stripHTML(html) {
+  if (!html) return '';
+  return html.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function emCodeToTicker(stockCode) {
+  if (!stockCode || stockCode.length !== 6) return null;
+  const code = stockCode.toString().trim();
+  if (code.startsWith('6')) return code + '.SS';
+  if (code.startsWith('0') || code.startsWith('3')) return code + '.SZ';
+  if (code.startsWith('4') || code.startsWith('8')) return code + '.BJ';
+  return code + '.SS';
+}
+
+async function openSectorModal(sectorId) {
+  const item = industryData.find(i => i.id === sectorId);
+  if (!item) return;
+  const existing = document.querySelector('.sector-modal-overlay');
+  if (existing) existing.remove();
+
+  const overlay = document.createElement('div');
+  overlay.className = 'sector-modal-overlay';
+  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+
+  const companyRows = item.companies.map(c => {
+    const sd = c.ticker ? getStockData(c.ticker) : null;
+    const price = sd && sd.currentPrice ? '¥' + sd.currentPrice.toFixed(2) : '';
+    const change = sd ? (sd.change >= 0 ? '+' : '') + sd.changePercent.toFixed(2) + '%' : '';
+    const changeCls = sd && sd.change >= 0 ? 'stock-up' : 'stock-down';
+    return '<div class="modal-company-row"><span>' + (c.country || '') + ' ' + escapeHTML(c.name) + '</span>' + (c.ticker ? '<span style="color:var(--text-muted);font-size:11px">' + escapeHTML(c.ticker) + '</span>' : '') + (price ? '<span class="' + changeCls + '" style="font-weight:600;margin-left:auto">' + price + ' ' + change + '</span>' : '<span style="color:var(--text-muted);margin-left:auto">' + (c.capLabel || '') + '</span>') + '</div>';
+  }).join('');
+
+  overlay.innerHTML = '<div class="sector-modal" style="position:relative"><button class="modal-close" onclick="this.closest(\'.sector-modal-overlay\').remove()">✕</button><h3>' + escapeHTML(item.name) + '</h3><div class="modal-layer">' + item.layerName + '</div><div class="modal-scores"><div class="modal-score"><div class="modal-score-val" style="color:var(--accent-red)">' + item.scarcity.toFixed(1) + '</div><div class="modal-score-label">🔥 紧缺度</div></div><div class="modal-score"><div class="modal-score-val" style="color:var(--accent-purple)">' + item.value.toFixed(1) + '</div><div class="modal-score-label">💎 价值</div></div><div class="modal-score"><div class="modal-score-val" style="color:var(--accent-cyan)">' + item.barrier.toFixed(1) + '</div><div class="modal-score-label">🏰 壁垒</div></div><div class="modal-score"><div class="modal-score-val" style="color:var(--accent-blue)">' + item.composite.toFixed(1) + '</div><div class="modal-score-label">📊 综合</div></div></div><div class="modal-companies">' + companyRows + '</div></div>';
+
+  document.body.appendChild(overlay);
+}
+
+window.openSectorModal = openSectorModal;
+
 async function fetchEastmoneyReports(pageNo = 1) {
   try {
     const url = `${EM_BASE}?cb=&industryCode=*&pageSize=50&pageNo=${pageNo}&fields=title,orgName,orgSName,publishDate,stockName,stockCode,summary,infoCode&qType=0&beginTime=2026-01-01&endTime=`;
