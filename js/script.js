@@ -439,6 +439,7 @@ return `
 <input type="checkbox" class="company-compare-check" title="加入对比" onclick="event.stopPropagation();toggleCompare('${c.name.replace(/'/g, "\\'")}','${(c.ticker||'').replace(/'/g, "\\'")}','${item.name.replace(/'/g, "\\'")}','${(c.capLabel||'').replace(/'/g, "\\'")}')">
 <span class="company-name-col">
 <span class="company-country">${c.country}</span> ${c.name}
+${c.exchange ? '<span class="company-exchange-tag">' + c.exchange + '</span>' : ''}
 </span>
 <span class="company-note-mini">${c.note}</span>
 ${capBadge}
@@ -533,6 +534,7 @@ return `
 <span class="ranking-company-rank-num">${ci + 1}</span>
 ${logo}
 <span class="ranking-company-name">${escapeHTML(c.name)}</span>
+${c.exchange ? '<span class="ranking-company-exchange">' + c.exchange + '</span>' : ''}
 <span class="ranking-company-note">${c.note}</span>
 </div>
 <div class="ranking-company-right">
@@ -601,6 +603,7 @@ return `
 <span class="ranking-company-rank-num">${ci + 1}</span>
 ${logo}
 <span class="ranking-company-name">${escapeHTML(c.name)}</span>
+${c.exchange ? '<span class="ranking-company-exchange">' + c.exchange + '</span>' : ''}
 <span class="ranking-company-note">${c.note}</span>
 </div>
 <div class="ranking-company-right">

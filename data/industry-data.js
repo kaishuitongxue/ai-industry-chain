@@ -18,7 +18,8 @@ const industryData = [
         "ticker": "NVDA",
         "marketCap": 5200,
         "capLabel": "市值 ¥377,000亿",
-        "note": "GPU霸主，H200/B300系列"
+        "note": "GPU霸主，H200/B300系列",
+        "exchange": "纳斯达克"
       },
       {
         "name": "AMD",
@@ -26,7 +27,8 @@ const industryData = [
         "ticker": "AMD",
         "marketCap": 310,
         "capLabel": "市值 ¥22,000亿",
-        "note": "MI300X 加速追赶"
+        "note": "MI300X 加速追赶",
+        "exchange": "纳斯达克"
       },
       {
         "name": "华为海思",
@@ -42,7 +44,8 @@ const industryData = [
         "ticker": "688256.SS",
         "marketCap": 28,
         "capLabel": "市值 ¥2,000亿",
-        "note": "思元系列AI芯片"
+        "note": "思元系列AI芯片",
+        "exchange": "上交所"
       },
       {
         "name": "海光信息",
@@ -50,7 +53,8 @@ const industryData = [
         "ticker": "688041.SS",
         "marketCap": 42,
         "capLabel": "市值 ¥3,000亿",
-        "note": "深算系列DCU"
+        "note": "深算系列DCU",
+        "exchange": "上交所"
       },
       {
         "name": "Google",
@@ -58,7 +62,8 @@ const industryData = [
         "ticker": "GOOGL",
         "marketCap": 2500,
         "capLabel": "市值 ¥181,000亿",
-        "note": "TPU v5 自研芯片"
+        "note": "TPU v5 自研芯片",
+        "exchange": "纳斯达克"
       },
       {
         "name": "Amazon",
@@ -66,7 +71,8 @@ const industryData = [
         "ticker": "AMZN",
         "marketCap": 2500,
         "capLabel": "市值 ¥181,000亿",
-        "note": "Trainium/Inferentia"
+        "note": "Trainium/Inferentia",
+        "exchange": "纳斯达克"
       },
       {
         "name": "Microsoft",
@@ -74,7 +80,8 @@ const industryData = [
         "ticker": "MSFT",
         "marketCap": 3800,
         "capLabel": "市值 ¥276,000亿",
-        "note": "Maia 100 AI加速器"
+        "note": "Maia 100 AI加速器",
+        "exchange": "纳斯达克"
       },
       {
         "name": "Intel Gaudi",
@@ -82,7 +89,8 @@ const industryData = [
         "ticker": "INTC",
         "marketCap": 155,
         "capLabel": "市值 ¥11,000亿",
-        "note": "Gaudi 3 AI加速器"
+        "note": "Gaudi 3 AI加速器",
+        "exchange": "纳斯达克"
       },
       {
         "name": "Graphcore",
@@ -112,9 +120,9 @@ const industryData = [
     "layer": "upstream",
     "layerName": "上游·基础层",
     "scarcity": 10,
-    "value": 9.5,
+    "value": 9.6,
     "barrier": 10,
-    "composite": 9.8,
+    "composite": 9.9,
     "trend": "up",
     "trendDesc": "产能极度紧张",
     "summary": "先进制程芯片制造门槛极高，台积电垄断 3nm 以下制程。AI 芯片订单已排至 2027 年，产能缺口巨大。",
@@ -125,7 +133,8 @@ const industryData = [
         "ticker": "TSM",
         "marketCap": 920,
         "capLabel": "市值 ¥67,000亿",
-        "note": "3nm/2nm 全球领先"
+        "note": "3nm/2nm 全球领先",
+        "exchange": "纽交所"
       },
       {
         "name": "三星电子",
@@ -133,7 +142,8 @@ const industryData = [
         "ticker": "005930.KS",
         "marketCap": 350,
         "capLabel": "市值 ¥25,000亿",
-        "note": "GAA 3nm 追赶中"
+        "note": "GAA 3nm 追赶中",
+        "exchange": "韩国证交所"
       },
       {
         "name": "Intel",
@@ -141,7 +151,8 @@ const industryData = [
         "ticker": "INTC",
         "marketCap": 155,
         "capLabel": "市值 ¥11,000亿",
-        "note": "Intel 18A 制程"
+        "note": "Intel 18A 制程",
+        "exchange": "纳斯达克"
       },
       {
         "name": "中芯国际 SMIC",
@@ -149,7 +160,8 @@ const industryData = [
         "ticker": "0981.HK",
         "marketCap": 38,
         "capLabel": "市值 ¥2,760亿",
-        "note": "N+2 先进工艺"
+        "note": "N+2 先进工艺",
+        "exchange": "港交所"
       },
       {
         "name": "ASML",
@@ -157,7 +169,8 @@ const industryData = [
         "ticker": "ASML",
         "marketCap": 420,
         "capLabel": "市值 ¥30,000亿",
-        "note": "EUV 光刻机垄断"
+        "note": "EUV 光刻机垄断",
+        "exchange": "纳斯达克"
       },
       {
         "name": "格罗方德 GF",
@@ -165,7 +178,8 @@ const industryData = [
         "ticker": "GFS",
         "marketCap": 28,
         "capLabel": "市值 ¥2,000亿",
-        "note": "成熟制程代工"
+        "note": "成熟制程代工",
+        "exchange": "纳斯达克"
       },
       {
         "name": "联电 UMC",
@@ -173,7 +187,8 @@ const industryData = [
         "ticker": "UMC",
         "marketCap": 20,
         "capLabel": "市值 ¥1,450亿",
-        "note": "28nm+成熟制程"
+        "note": "28nm+成熟制程",
+        "exchange": "纽交所"
       },
       {
         "name": "华虹半导体",
@@ -181,7 +196,8 @@ const industryData = [
         "ticker": "688347.SS",
         "marketCap": 12,
         "capLabel": "市值 ¥870亿",
-        "note": "特色工艺代工"
+        "note": "特色工艺代工",
+        "exchange": "上交所"
       },
       {
         "name": "东京电子 TEL",
@@ -189,7 +205,8 @@ const industryData = [
         "ticker": "8035.T",
         "marketCap": 85,
         "capLabel": "市值 ¥6,200亿",
-        "note": "半导体设备巨头"
+        "note": "半导体设备巨头",
+        "exchange": "东京证交所"
       },
       {
         "name": "应用材料 AMAT",
@@ -197,7 +214,8 @@ const industryData = [
         "ticker": "AMAT",
         "marketCap": 150,
         "capLabel": "市值 ¥11,000亿",
-        "note": "沉积/刻蚀设备"
+        "note": "沉积/刻蚀设备",
+        "exchange": "纳斯达克"
       }
     ],
     "newsFactors": [
@@ -218,10 +236,10 @@ const industryData = [
     "name": "算力基础设施",
     "layer": "upstream",
     "layerName": "上游·基础层",
-    "scarcity": 8.9,
-    "value": 9,
+    "scarcity": 9.1,
+    "value": 9.1,
     "barrier": 7.5,
-    "composite": 8.6,
+    "composite": 8.7,
     "trend": "up",
     "trendDesc": "建设加速中",
     "summary": "数据中心、云计算平台、算力调度网络。AI 训练对算力需求呈指数增长，全球数据中心投资 2026 年超 3000 亿美元。",
@@ -232,7 +250,8 @@ const industryData = [
         "ticker": "AMZN",
         "marketCap": 2500,
         "capLabel": "市值 ¥181,000亿",
-        "note": "全球最大云服务商"
+        "note": "全球最大云服务商",
+        "exchange": "纳斯达克"
       },
       {
         "name": "Microsoft Azure",
@@ -240,7 +259,8 @@ const industryData = [
         "ticker": "MSFT",
         "marketCap": 3800,
         "capLabel": "市值 ¥276,000亿",
-        "note": "OpenAI 独家算力"
+        "note": "OpenAI 独家算力",
+        "exchange": "纳斯达克"
       },
       {
         "name": "Google Cloud",
@@ -248,7 +268,8 @@ const industryData = [
         "ticker": "GOOGL",
         "marketCap": 2500,
         "capLabel": "市值 ¥181,000亿",
-        "note": "TPU 云服务"
+        "note": "TPU 云服务",
+        "exchange": "纳斯达克"
       },
       {
         "name": "阿里云",
@@ -256,7 +277,8 @@ const industryData = [
         "ticker": "BABA",
         "marketCap": 320,
         "capLabel": "市值 ¥23,000亿",
-        "note": "中国最大公有云"
+        "note": "中国最大公有云",
+        "exchange": "纽交所"
       },
       {
         "name": "华为云",
@@ -272,7 +294,8 @@ const industryData = [
         "ticker": "EQIX",
         "marketCap": 88,
         "capLabel": "市值 ¥6,380亿",
-        "note": "全球数据中心REIT"
+        "note": "全球数据中心REIT",
+        "exchange": "纽交所"
       },
       {
         "name": "Oracle Cloud",
@@ -280,7 +303,8 @@ const industryData = [
         "ticker": "ORCL",
         "marketCap": 380,
         "capLabel": "市值 ¥27,600亿",
-        "note": "OCI AI 集群"
+        "note": "OCI AI 集群",
+        "exchange": "纽交所"
       },
       {
         "name": "CoreWeave",
@@ -288,7 +312,8 @@ const industryData = [
         "ticker": "CRWV",
         "marketCap": 25,
         "capLabel": "市值 ¥1,800亿",
-        "note": "GPU云专业服务商"
+        "note": "GPU云专业服务商",
+        "exchange": "纳斯达克"
       },
       {
         "name": "Digital Realty",
@@ -296,7 +321,8 @@ const industryData = [
         "ticker": "DLR",
         "marketCap": 55,
         "capLabel": "市值 ¥4,000亿",
-        "note": "全球数据中心REIT"
+        "note": "全球数据中心REIT",
+        "exchange": "纽交所"
       },
       {
         "name": "浪潮信息",
@@ -304,7 +330,8 @@ const industryData = [
         "ticker": "000977.SZ",
         "marketCap": 10,
         "capLabel": "市值 ¥725亿",
-        "note": "AI服务器龙头"
+        "note": "AI服务器龙头",
+        "exchange": "深交所"
       }
     ],
     "newsFactors": [
@@ -320,10 +347,10 @@ const industryData = [
     "name": "数据标注与处理",
     "layer": "upstream",
     "layerName": "上游·基础层",
-    "scarcity": 4.7,
-    "value": 5.7,
+    "scarcity": 4.8,
+    "value": 5.8,
     "barrier": 2.5,
-    "composite": 4.5,
+    "composite": 4.6,
     "trend": "flat",
     "trendDesc": "自动化替代中",
     "summary": "为模型训练提供标注数据。随着 AI 自动化标注技术发展，人工标注价值下降，高质量专业标注仍有需求。",
@@ -342,7 +369,8 @@ const industryData = [
         "ticker": "APX.AX",
         "marketCap": 0.4,
         "capLabel": "市值 ¥30亿",
-        "note": "全球数据服务商"
+        "note": "全球数据服务商",
+        "exchange": "澳交所"
       },
       {
         "name": "海天瑞声",
@@ -350,7 +378,8 @@ const industryData = [
         "ticker": "688787.SS",
         "marketCap": 1.5,
         "capLabel": "市值 ¥110亿",
-        "note": "AI训练数据龙头"
+        "note": "AI训练数据龙头",
+        "exchange": "上交所"
       },
       {
         "name": "云测数据",
@@ -390,10 +419,10 @@ const industryData = [
     "name": "合成数据/训练数据平台",
     "layer": "upstream",
     "layerName": "上游·基础层",
-    "scarcity": 7.4,
-    "value": 7.7,
+    "scarcity": 7.6,
+    "value": 7.8,
     "barrier": 6.5,
-    "composite": 7.3,
+    "composite": 7.4,
     "trend": "up",
     "trendDesc": "快速崛起",
     "summary": "用 AI 生成高质量训练数据，解决真实数据稀缺、隐私合规等问题。合成数据在自动驾驶、医疗等领域应用广泛。",
@@ -436,7 +465,8 @@ const industryData = [
         "ticker": "NVDA",
         "marketCap": 5200,
         "capLabel": "市值 ¥377,000亿",
-        "note": "3D合成数据平台"
+        "note": "3D合成数据平台",
+        "exchange": "纳斯达克"
       },
       {
         "name": "Hazy",
@@ -476,10 +506,10 @@ const industryData = [
     "name": "大语言模型 (LLM)",
     "layer": "midstream",
     "layerName": "中游·技术层",
-    "scarcity": 9.3,
-    "value": 9.8,
+    "scarcity": 9.6,
+    "value": 10,
     "barrier": 9.5,
-    "composite": 9.5,
+    "composite": 9.7,
     "trend": "up",
     "trendDesc": "竞争白热化",
     "summary": "GPT、Claude、Gemini 等大语言模型是当前 AI 产业核心。头部模型训练成本超 10 亿美元，技术和资金壁垒极高。",
@@ -506,7 +536,8 @@ const industryData = [
         "ticker": "GOOGL",
         "marketCap": 2500,
         "capLabel": "市值 ¥181,000亿",
-        "note": "Gemini 3"
+        "note": "Gemini 3",
+        "exchange": "纳斯达克"
       },
       {
         "name": "Meta",
@@ -514,7 +545,8 @@ const industryData = [
         "ticker": "META",
         "marketCap": 1800,
         "capLabel": "市值 ¥131,000亿",
-        "note": "Llama 4 开源"
+        "note": "Llama 4 开源",
+        "exchange": "纳斯达克"
       },
       {
         "name": "深度求索 DeepSeek",
@@ -546,7 +578,8 @@ const industryData = [
         "ticker": "BIDU",
         "marketCap": 35,
         "capLabel": "市值 ¥2,540亿",
-        "note": "文心一言 5.0"
+        "note": "文心一言 5.0",
+        "exchange": "纳斯达克"
       },
       {
         "name": "月之暗面",
@@ -575,10 +608,10 @@ const industryData = [
     "name": "多模态模型",
     "layer": "midstream",
     "layerName": "中游·技术层",
-    "scarcity": 8.5,
-    "value": 9.2,
+    "scarcity": 8.7,
+    "value": 9.3,
     "barrier": 9,
-    "composite": 8.9,
+    "composite": 9,
     "trend": "up",
     "trendDesc": "技术突破期",
     "summary": "融合文本、图像、视频、音频的统一模型。Sora、Veo 等视频生成模型引爆市场，多模态能力成为模型标配。",
@@ -597,7 +630,8 @@ const industryData = [
         "ticker": "GOOGL",
         "marketCap": 2500,
         "capLabel": "市值 ¥181,000亿",
-        "note": "视频/音频多模态"
+        "note": "视频/音频多模态",
+        "exchange": "纳斯达克"
       },
       {
         "name": "Runway",
@@ -637,7 +671,8 @@ const industryData = [
         "ticker": "ADBE",
         "marketCap": 220,
         "capLabel": "市值 ¥16,000亿",
-        "note": "Firefly AI创意套件"
+        "note": "Firefly AI创意套件",
+        "exchange": "纳斯达克"
       },
       {
         "name": "商汤科技",
@@ -645,7 +680,8 @@ const industryData = [
         "ticker": "0020.HK",
         "marketCap": 12,
         "capLabel": "市值 ¥870亿",
-        "note": "日日新大模型"
+        "note": "日日新大模型",
+        "exchange": "港交所"
       },
       {
         "name": "Stability AI",
@@ -691,7 +727,8 @@ const industryData = [
         "ticker": "META",
         "marketCap": 1800,
         "capLabel": "市值 ¥131,000亿",
-        "note": "最主流DL框架"
+        "note": "最主流DL框架",
+        "exchange": "纳斯达克"
       },
       {
         "name": "Google (TensorFlow/JAX)",
@@ -699,7 +736,8 @@ const industryData = [
         "ticker": "GOOGL",
         "marketCap": 2500,
         "capLabel": "市值 ¥181,000亿",
-        "note": "TPU生态"
+        "note": "TPU生态",
+        "exchange": "纳斯达克"
       },
       {
         "name": "LangChain",
@@ -841,7 +879,8 @@ const industryData = [
         "ticker": "ESTC",
         "marketCap": 12,
         "capLabel": "市值 ¥870亿",
-        "note": "ES向量检索"
+        "note": "ES向量检索",
+        "exchange": "纽交所"
       },
       {
         "name": "DataStax",
@@ -875,10 +914,10 @@ const industryData = [
     "name": "MLOps/AI 运维平台",
     "layer": "midstream",
     "layerName": "中游·技术层",
-    "scarcity": 6.7,
-    "value": 7.2,
+    "scarcity": 6.8,
+    "value": 7.3,
     "barrier": 6.5,
-    "composite": 6.8,
+    "composite": 6.9,
     "trend": "up",
     "trendDesc": "企业需求增长",
     "summary": "模型训练、部署、监控、版本管理的全生命周期平台。企业 AI 化加速推动 MLOps 需求爆发。",
@@ -913,7 +952,8 @@ const industryData = [
         "ticker": "6682.HK",
         "marketCap": 2.8,
         "capLabel": "市值 ¥200亿",
-        "note": "企业级AI平台"
+        "note": "企业级AI平台",
+        "exchange": "港交所"
       },
       {
         "name": "ClearML",
@@ -969,10 +1009,10 @@ const industryData = [
     "name": "AI Agent 智能体",
     "layer": "downstream",
     "layerName": "下游·应用层",
-    "scarcity": 8.8,
-    "value": 9.4,
+    "scarcity": 9.2,
+    "value": 9.6,
     "barrier": 6.5,
-    "composite": 8.4,
+    "composite": 8.7,
     "trend": "up",
     "trendDesc": "爆发增长🔥",
     "summary": "具备自主规划、执行、反思能力的 AI 智能体。2026 年被称为 Agent 元年，企业级 Agent 融资额同比增长 320%。",
@@ -1031,7 +1071,8 @@ const industryData = [
         "ticker": "CRM",
         "marketCap": 280,
         "capLabel": "市值 ¥20,300亿",
-        "note": "Agentforce平台"
+        "note": "Agentforce平台",
+        "exchange": "纽交所"
       },
       {
         "name": "ServiceNow",
@@ -1039,7 +1080,8 @@ const industryData = [
         "ticker": "NOW",
         "marketCap": 200,
         "capLabel": "市值 ¥14,500亿",
-        "note": "Now Assist AI"
+        "note": "Now Assist AI",
+        "exchange": "纽交所"
       },
       {
         "name": "UiPath",
@@ -1047,7 +1089,8 @@ const industryData = [
         "ticker": "PATH",
         "marketCap": 10,
         "capLabel": "市值 ¥725亿",
-        "note": "企业自动化Agent"
+        "note": "企业自动化Agent",
+        "exchange": "纽交所"
       },
       {
         "name": "钉钉",
@@ -1055,7 +1098,8 @@ const industryData = [
         "ticker": "BABA",
         "marketCap": 320,
         "capLabel": "市值 ¥23,000亿",
-        "note": "钉钉AI助手"
+        "note": "钉钉AI助手",
+        "exchange": "纽交所"
       }
     ],
     "newsFactors": [
@@ -1076,10 +1120,10 @@ const industryData = [
     "name": "AI 编程助手",
     "layer": "downstream",
     "layerName": "下游·应用层",
-    "scarcity": 7.9,
-    "value": 8.2,
+    "scarcity": 8.1,
+    "value": 8.3,
     "barrier": 6,
-    "composite": 7.5,
+    "composite": 7.6,
     "trend": "up",
     "trendDesc": "开发者标配",
     "summary": "AI 辅助代码生成、审查、重构。GitHub Copilot 年收入破 20 亿美元，编程范式正在被 AI 重塑。",
@@ -1090,7 +1134,8 @@ const industryData = [
         "ticker": "MSFT",
         "marketCap": 3800,
         "capLabel": "市值 ¥276,000亿",
-        "note": "市场领导者"
+        "note": "市场领导者",
+        "exchange": "纳斯达克"
       },
       {
         "name": "Cursor/Anysphere",
@@ -1122,7 +1167,8 @@ const industryData = [
         "ticker": "BABA",
         "marketCap": 320,
         "capLabel": "市值 ¥23,000亿",
-        "note": "阿里AI编程助手"
+        "note": "阿里AI编程助手",
+        "exchange": "纽交所"
       },
       {
         "name": "文心快码",
@@ -1130,7 +1176,8 @@ const industryData = [
         "ticker": "BIDU",
         "marketCap": 35,
         "capLabel": "市值 ¥2,540亿",
-        "note": "百度AI编程助手"
+        "note": "百度AI编程助手",
+        "exchange": "纳斯达克"
       },
       {
         "name": "Anysphere (Cursor)",
@@ -1170,10 +1217,10 @@ const industryData = [
     "name": "AI 医疗健康",
     "layer": "downstream",
     "layerName": "下游·应用层",
-    "scarcity": 8.9,
-    "value": 9.4,
+    "scarcity": 9.1,
+    "value": 9.5,
     "barrier": 8.5,
-    "composite": 9,
+    "composite": 9.1,
     "trend": "up",
     "trendDesc": "审批加速",
     "summary": "AI 辅助诊断、药物研发、医学影像分析。FDA/中国NMPA 加速审批 AI 医疗器械，AI 制药缩短研发周期 50%+。",
@@ -1184,7 +1231,8 @@ const industryData = [
         "ticker": "TEM",
         "marketCap": 8,
         "capLabel": "市值 ¥580亿",
-        "note": "AI精准医疗平台"
+        "note": "AI精准医疗平台",
+        "exchange": "纳斯达克"
       },
       {
         "name": "Recursion",
@@ -1192,7 +1240,8 @@ const industryData = [
         "ticker": "RXRX",
         "marketCap": 3.5,
         "capLabel": "市值 ¥250亿",
-        "note": "AI制药先驱"
+        "note": "AI制药先驱",
+        "exchange": "纳斯达克"
       },
       {
         "name": "Isomorphic Labs",
@@ -1216,7 +1265,8 @@ const industryData = [
         "ticker": "2228.HK",
         "marketCap": 1.5,
         "capLabel": "市值 ¥110亿",
-        "note": "AI药物研发"
+        "note": "AI药物研发",
+        "exchange": "港交所"
       },
       {
         "name": "医渡科技",
@@ -1224,7 +1274,8 @@ const industryData = [
         "ticker": "2158.HK",
         "marketCap": 1.2,
         "capLabel": "市值 ¥90亿",
-        "note": "医疗AI大数据"
+        "note": "医疗AI大数据",
+        "exchange": "港交所"
       },
       {
         "name": "英矽智能",
@@ -1240,7 +1291,8 @@ const industryData = [
         "ticker": "BFLY",
         "marketCap": 2,
         "capLabel": "市值 ¥145亿",
-        "note": "AI便携超声"
+        "note": "AI便携超声",
+        "exchange": "纽交所"
       }
     ],
     "newsFactors": [
@@ -1286,7 +1338,8 @@ const industryData = [
         "ticker": "300033.SZ",
         "marketCap": 18,
         "capLabel": "市值 ¥1,300亿",
-        "note": "AI金融信息服务"
+        "note": "AI金融信息服务",
+        "exchange": "深交所"
       },
       {
         "name": "Kensho (S&P)",
@@ -1294,7 +1347,8 @@ const industryData = [
         "ticker": "SPGI",
         "marketCap": 155,
         "capLabel": "市值 ¥11,000亿",
-        "note": "AI金融分析"
+        "note": "AI金融分析",
+        "exchange": "纳斯达克"
       },
       {
         "name": "Upstart",
@@ -1302,7 +1356,8 @@ const industryData = [
         "ticker": "UPST",
         "marketCap": 4.5,
         "capLabel": "市值 ¥330亿",
-        "note": "AI信贷决策"
+        "note": "AI信贷决策",
+        "exchange": "纳斯达克"
       },
       {
         "name": "Affirm",
@@ -1310,7 +1365,8 @@ const industryData = [
         "ticker": "AFRM",
         "marketCap": 18,
         "capLabel": "市值 ¥1,300亿",
-        "note": "AI信贷评估"
+        "note": "AI信贷评估",
+        "exchange": "纳斯达克"
       },
       {
         "name": "东方财富",
@@ -1318,7 +1374,8 @@ const industryData = [
         "ticker": "300059.SZ",
         "marketCap": 42,
         "capLabel": "市值 ¥3,050亿",
-        "note": "AI智能投研"
+        "note": "AI智能投研",
+        "exchange": "深交所"
       }
     ],
     "newsFactors": [
@@ -1334,10 +1391,10 @@ const industryData = [
     "name": "AI 教育",
     "layer": "downstream",
     "layerName": "下游·应用层",
-    "scarcity": 5.7,
-    "value": 7.2,
+    "scarcity": 5.8,
+    "value": 7.3,
     "barrier": 4.5,
-    "composite": 5.9,
+    "composite": 6,
     "trend": "up",
     "trendDesc": "个性化教学",
     "summary": "AI 个性化辅导、自适应学习、智能批改。Khan Academy 的 Khanmigo 和 Duolingo Max 引领 AI 教育应用。",
@@ -1356,7 +1413,8 @@ const industryData = [
         "ticker": "DUOL",
         "marketCap": 15,
         "capLabel": "市值 ¥1,090亿",
-        "note": "Duolingo Max"
+        "note": "Duolingo Max",
+        "exchange": "纳斯达克"
       },
       {
         "name": "好未来",
@@ -1364,7 +1422,8 @@ const industryData = [
         "ticker": "TAL",
         "marketCap": 5,
         "capLabel": "市值 ¥360亿",
-        "note": "MathGPT 数学大模型"
+        "note": "MathGPT 数学大模型",
+        "exchange": "纳斯达克"
       },
       {
         "name": "作业帮",
@@ -1380,7 +1439,8 @@ const industryData = [
         "ticker": "002230.SZ",
         "marketCap": 22,
         "capLabel": "市值 ¥1,600亿",
-        "note": "AI 教育+语音"
+        "note": "AI 教育+语音",
+        "exchange": "深交所"
       },
       {
         "name": "多邻国 Duolingo",
@@ -1388,7 +1448,8 @@ const industryData = [
         "ticker": "DUOL",
         "marketCap": 15,
         "capLabel": "市值 ¥1,090亿",
-        "note": "AI语言学习"
+        "note": "AI语言学习",
+        "exchange": "纳斯达克"
       },
       {
         "name": "Chegg",
@@ -1396,7 +1457,8 @@ const industryData = [
         "ticker": "CHGG",
         "marketCap": 3,
         "capLabel": "市值 ¥220亿",
-        "note": "AI教育辅导"
+        "note": "AI教育辅导",
+        "exchange": "纽交所"
       },
       {
         "name": "猿辅导",
@@ -1412,7 +1474,8 @@ const industryData = [
         "ticker": "COUR",
         "marketCap": 4,
         "capLabel": "市值 ¥290亿",
-        "note": "AI课程平台"
+        "note": "AI课程平台",
+        "exchange": "纽交所"
       }
     ],
     "newsFactors": [
@@ -1428,10 +1491,10 @@ const industryData = [
     "name": "AI 内容生成 (AIGC)",
     "layer": "downstream",
     "layerName": "下游·应用层",
-    "scarcity": 4.2,
-    "value": 6.7,
+    "scarcity": 4.3,
+    "value": 6.8,
     "barrier": 3.5,
-    "composite": 4.9,
+    "composite": 5,
     "trend": "down",
     "trendDesc": "竞争激烈",
     "summary": "AI 生成文案、图片、视频、音乐。Midjourney、Canva AI 等工具使内容创作门槛大幅降低，赛道竞争白热化。",
@@ -1458,7 +1521,8 @@ const industryData = [
         "ticker": "ADBE",
         "marketCap": 220,
         "capLabel": "市值 ¥16,000亿",
-        "note": "创意AI套件"
+        "note": "创意AI套件",
+        "exchange": "纳斯达克"
       },
       {
         "name": "字节跳动即梦",
@@ -1474,7 +1538,8 @@ const industryData = [
         "ticker": "1357.HK",
         "marketCap": 6,
         "capLabel": "市值 ¥440亿",
-        "note": "AI影像/设计工具"
+        "note": "AI影像/设计工具",
+        "exchange": "港交所"
       },
       {
         "name": "LiblibAI",
@@ -1514,10 +1579,10 @@ const industryData = [
     "name": "具身智能/机器人",
     "layer": "downstream",
     "layerName": "下游·应用层",
-    "scarcity": 9.8,
+    "scarcity": 10,
     "value": 10,
     "barrier": 9,
-    "composite": 9.7,
+    "composite": 9.8,
     "trend": "up",
     "trendDesc": "新风口🔥",
     "summary": "结合 AI 大模型的实体机器人，具备感知、规划和执行能力。人形机器人被视为继手机和汽车后的下一个万亿级终端。",
@@ -1528,7 +1593,8 @@ const industryData = [
         "ticker": "TSLA",
         "marketCap": 1200,
         "capLabel": "市值 ¥87,000亿",
-        "note": "人形机器人标杆"
+        "note": "人形机器人标杆",
+        "exchange": "纳斯达克"
       },
       {
         "name": "Figure AI",
@@ -1560,7 +1626,8 @@ const industryData = [
         "ticker": "9880.HK",
         "marketCap": 6,
         "capLabel": "市值 ¥440亿",
-        "note": "Walker 系列"
+        "note": "Walker 系列",
+        "exchange": "港交所"
       },
       {
         "name": "达闼机器人",
@@ -1613,10 +1680,10 @@ const industryData = [
     "name": "自动驾驶",
     "layer": "downstream",
     "layerName": "下游·应用层",
-    "scarcity": 8.6,
-    "value": 9.4,
+    "scarcity": 8.9,
+    "value": 9.6,
     "barrier": 9.5,
-    "composite": 9.1,
+    "composite": 9.3,
     "trend": "up",
     "trendDesc": "L4加速落地",
     "summary": "从 L2+ 辅助驾驶到 L4 无人驾驶，端到端大模型重塑技术路线。Robotaxi 在中美多个城市开启商用运营。",
@@ -1627,7 +1694,8 @@ const industryData = [
         "ticker": "GOOGL",
         "marketCap": 2500,
         "capLabel": "市值 ¥181,000亿",
-        "note": "Robotaxi 领导者"
+        "note": "Robotaxi 领导者",
+        "exchange": "纳斯达克"
       },
       {
         "name": "Tesla FSD",
@@ -1635,7 +1703,8 @@ const industryData = [
         "ticker": "TSLA",
         "marketCap": 1200,
         "capLabel": "市值 ¥87,000亿",
-        "note": "端到端视觉方案"
+        "note": "端到端视觉方案",
+        "exchange": "纳斯达克"
       },
       {
         "name": "华为 ADS",
@@ -1651,7 +1720,8 @@ const industryData = [
         "ticker": "BIDU",
         "marketCap": 35,
         "capLabel": "市值 ¥2,540亿",
-        "note": "萝卜快跑Robotaxi"
+        "note": "萝卜快跑Robotaxi",
+        "exchange": "纳斯达克"
       },
       {
         "name": "小鹏汽车",
@@ -1659,7 +1729,8 @@ const industryData = [
         "ticker": "XPEV",
         "marketCap": 18,
         "capLabel": "市值 ¥1,300亿",
-        "note": "XNGP 全场景智驾"
+        "note": "XNGP 全场景智驾",
+        "exchange": "纽交所"
       },
       {
         "name": "Mobileye",
@@ -1667,7 +1738,8 @@ const industryData = [
         "ticker": "MBLY",
         "marketCap": 15,
         "capLabel": "市值 ¥1,090亿",
-        "note": "ADAS 芯片+方案"
+        "note": "ADAS 芯片+方案",
+        "exchange": "纳斯达克"
       },
       {
         "name": "Cruise (GM)",
@@ -1675,7 +1747,8 @@ const industryData = [
         "ticker": "GM",
         "marketCap": 45,
         "capLabel": "市值 ¥3,300亿",
-        "note": "Robotaxi 美国前三"
+        "note": "Robotaxi 美国前三",
+        "exchange": "纽交所"
       },
       {
         "name": "Aurora",
@@ -1683,7 +1756,8 @@ const industryData = [
         "ticker": "AUR",
         "marketCap": 6,
         "capLabel": "市值 ¥435亿",
-        "note": "自动驾驶卡车"
+        "note": "自动驾驶卡车",
+        "exchange": "纳斯达克"
       },
       {
         "name": "地平线",
@@ -1699,7 +1773,8 @@ const industryData = [
         "ticker": "NIO",
         "marketCap": 12,
         "capLabel": "市值 ¥870亿",
-        "note": "NAD 全栈智驾"
+        "note": "NAD 全栈智驾",
+        "exchange": "纽交所"
       }
     ],
     "newsFactors": [
@@ -1724,12 +1799,6 @@ industryData.forEach(item => {
   item.composite = +(item.scarcity * 0.4 + item.value * 0.35 + item.barrier * 0.25).toFixed(1);
   item.composite = Math.min(10, Math.max(1, item.composite));
 });
-
-// ============================================
-// AI 全产业链数据 v2 — 含市值/估值 + 股票代码
-// 评分范围：1-10，综合得分 = 紧缺度×0.4 + 价值×0.35 + 壁垒×0.25
-// ============================================
-
 
 const stockSimData = {};
 
@@ -1804,4 +1873,5 @@ function generateKLineData(ticker, marketCapB) {
     });
   });
 })();
+
 
