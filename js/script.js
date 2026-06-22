@@ -783,11 +783,6 @@ const RSS_SOURCES = [
   { url: 'https://news.google.com/rss/search?q=%E4%BA%BA%E5%BD%A2%E6%9C%BA%E5%99%A8%E4%BA%BA+%E5%85%B7%E8%BA%AB%E6%99%BA%E8%83%BD+Figure+Optimus&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google 机器人' },
   { url: 'https://news.google.com/rss/search?q=AI+agent+%E6%99%BA%E8%83%BD%E4%BD%93+Copilot+AI%E5%BA%94%E7%94%A8&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google AI Agent' },
   { url: 'https://news.google.com/rss/search?q=%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6+Waymo+%E8%90%9D%E5%8D%9C%E5%BF%AB%E8%B7%91+%E6%99%BA%E9%A9%BE&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google 自动驾驶' },
-  { url: 'https://news.google.com/rss/search?q=AI+semiconductor+artificial+intelligence+chip+LLM&hl=en-US&gl=US&ceid=US:en', label: 'Google 英文AI' },
-  // 英文科技媒体
-  { url: 'https://techcrunch.com/feed/', label: 'TechCrunch' },
-  { url: 'https://www.theverge.com/rss/index.xml', label: 'The Verge' },
-  { url: 'https://feeds.arstechnica.com/arstechnica/index', label: 'Ars Technica' },
 ];
 
 
