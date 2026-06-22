@@ -156,7 +156,15 @@
 
 
   function getStockData(ticker) {
-    return STOCK_CACHE[ticker]?.data || null;
+    const cached = STOCK_CACHE[ticker]?.data;
+    if (cached) return cached;
+    // 回退到模拟数据（启动时立即可用）
+    const sim = stockSimData[ticker];
+    if (sim) {
+      STOCK_CACHE[ticker] = { data: sim, updatedAt: 0 };
+      return sim;
+    }
+    return null;
   }
 
   // 快速获取股价（仅2天，极速）
@@ -379,10 +387,17 @@
     industryData.forEach(item => layers[item.layer].push(item));
 
     Object.entries(layers).forEach(([layer, items]) => {
-      const container = $(`#${layer}Overview`);
+      const container = $(`#${layer}Tags`);
+      if (!container) return;
       container.innerHTML = items.map(item => {
-        const layerPage = layer; // upstream/midstream/downstream
-        return `<span class="layer-chip" onclick="switchPage('${layerPage}');setTimeout(()=>document.getElementById('${item.id}')?.scrollIntoView({behavior:'smooth',block:'center'}),400)">${item.name}</span>`;
+        const compColor = item.composite >= 8 ? 'var(--stock-up)' : item.composite >= 6 ? 'var(--accent-blue)' : 'var(--accent-orange)';
+        return `
+          <div class="track-chip" onclick="switchPage('${layer}');setTimeout(()=>document.getElementById('${item.id}')?.scrollIntoView({behavior:'smooth',block:'center'}),300)"
+               title="${item.summary.slice(0, 80)}...">
+            <span class="track-chip-name">${item.name}</span>
+            <span class="track-chip-score" style="color:${compColor}">${item.composite.toFixed(1)}</span>
+            <span class="track-chip-trend">${item.trend === 'up' ? '🔥' : item.trend === 'down' ? '📉' : '➡️'}</span>
+          </div>`;
       }).join('');
     });
   }
@@ -839,7 +854,7 @@
     data.forEach((d, i) => {
       const x = padding.left + i * candleSpacing + gap / 2;
       const volTopY = volToY(d.volume);
-      const color = d.close >= d.open ? 'rgba(34,197,94,0.35)' : 'rgba(239,68,68,0.35)';
+      const color = d.close >= d.open ? 'rgba(239,68,68,0.35)' : 'rgba(34,197,94,0.35)';  /* 红涨绿跌 */
       ctx.fillStyle = color;
       ctx.fillRect(x, volTopY, candleWidth, volTop + volH - volTopY);
     });
@@ -856,7 +871,7 @@
     data.forEach((d, i) => {
       const x = padding.left + i * candleSpacing + gap / 2;
       const isUp = d.close >= d.open;
-      const color = isUp ? '#22c55e' : '#ef4444';
+      const color = isUp ? '#ef4444' : '#22c55e';  /* 红涨绿跌 */
 
       // 影线
       ctx.strokeStyle = color;
@@ -872,7 +887,7 @@
       const openY = priceToY(d.open);
       const closeY = priceToY(d.close);
       const bodyH = Math.max(1, Math.abs(closeY - openY));
-      ctx.fillStyle = isUp ? '#22c55e' : '#ef4444';
+      ctx.fillStyle = isUp ? '#ef4444' : '#22c55e';  /* 红涨绿跌 */
       ctx.fillRect(x, Math.min(openY, closeY), candleWidth, bodyH);
     });
 
