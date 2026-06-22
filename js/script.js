@@ -766,15 +766,28 @@ ctx.fillText('Vol', padding.left - 6, volTop + 10);
 ctx.fillText((maxVol / 1e6).toFixed(0) + 'M', padding.left - 6, volTop + volH - 2);
 }
 const RSS_SOURCES = [
-{ url: 'https://www.qbitai.com/feed', label: '量子位' },
-{ url: 'https://36kr.com/feed', label: '36氪' },
-{ url: 'https://sspai.com/feed', label: '少数派' },
-{ url: 'https://www.ithome.com/rss/', label: 'IT之家' },
-{ url: 'https://news.google.com/rss/search?q=%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD+AI+%E5%A4%A7%E6%A8%A1%E5%9E%8B&hl=zh-CN&gl=CN&ceid=CN:zh-Hans&when:24h', label: 'Google 综合AI' },
-{ url: 'https://news.google.com/rss/search?q=AI%E8%8A%AF%E7%89%87+%E6%99%BA%E8%83%BD%E9%A9%BE%E9%A9%B6+%E6%9C%BA%E5%99%A8%E4%BA%BA&hl=zh-CN&gl=CN&ceid=CN:zh-Hans&when:24h', label: 'Google AI硬件' },
-{ url: 'https://news.google.com/rss/search?q=OpenAI+ChatGPT+Claude+Gemini+AI%E6%A8%A1%E5%9E%8B&hl=zh-CN&gl=CN&ceid=CN:zh-Hans&when:24h', label: 'Google 大模型' },
-{ url: 'https://news.google.com/rss/search?q=AI%E5%8C%BB%E7%96%97+AI%E9%87%91%E8%9E%8D+AI%E6%95%99%E8%82%B2+AIGC&hl=zh-CN&gl=CN&ceid=CN:zh-Hans&when:24h', label: 'Google AI应用' },
-{ url: 'https://news.google.com/rss/search?q=NVIDIA+%E8%8B%B1%E4%BC%9F%E8%BE%BE+TSMC+%E5%8F%B0%E7%A7%AF%E7%94%B5+AI&hl=zh-CN&gl=CN&ceid=CN:zh-Hans&when:24h', label: 'Google AI芯片' },
+  // 国内AI科技媒体（直接RSS）
+  { url: 'https://www.qbitai.com/feed', label: '量子位' },
+  { url: 'https://36kr.com/feed', label: '36氪' },
+  { url: 'https://sspai.com/feed', label: '少数派' },
+  { url: 'https://www.ithome.com/rss/', label: 'IT之家' },
+  { url: 'https://www.pingwest.com/feed', label: '品玩' },
+  { url: 'https://www.geekpark.net/feed', label: '极客公园' },
+  { url: 'https://www.jiqizhixin.com/rss', label: '机器之心' },
+  // Google News 中文（去掉24h限制，扩大时间范围）
+  { url: 'https://news.google.com/rss/search?q=%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD+AI+%E5%A4%A7%E6%A8%A1%E5%9E%8B&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google 综合AI' },
+  { url: 'https://news.google.com/rss/search?q=AI+%E8%8A%AF%E7%89%87+%E6%99%BA%E8%83%BD%E9%A9%BE%E9%A9%B6+%E6%9C%BA%E5%99%A8%E4%BA%BA&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google AI硬件' },
+  { url: 'https://news.google.com/rss/search?q=OpenAI+ChatGPT+Claude+Gemini+AI%E6%A8%A1%E5%9E%8B&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google 大模型' },
+  { url: 'https://news.google.com/rss/search?q=AI%E5%8C%BB%E7%96%97+AI%E9%87%91%E8%9E%8D+AI%E6%95%99%E8%82%B2+AIGC&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google AI应用' },
+  { url: 'https://news.google.com/rss/search?q=NVIDIA+%E8%8B%B1%E4%BC%9F%E8%BE%BE+TSMC+%E5%8F%B0%E7%A7%AF%E7%94%B5+AI&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google AI芯片' },
+  { url: 'https://news.google.com/rss/search?q=%E4%BA%BA%E5%BD%A2%E6%9C%BA%E5%99%A8%E4%BA%BA+%E5%85%B7%E8%BA%AB%E6%99%BA%E8%83%BD+Figure+Optimus&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google 机器人' },
+  { url: 'https://news.google.com/rss/search?q=AI+agent+%E6%99%BA%E8%83%BD%E4%BD%93+Copilot+AI%E5%BA%94%E7%94%A8&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google AI Agent' },
+  { url: 'https://news.google.com/rss/search?q=%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6+Waymo+%E8%90%9D%E5%8D%9C%E5%BF%AB%E8%B7%91+%E6%99%BA%E9%A9%BE&hl=zh-CN&gl=CN&ceid=CN:zh-Hans', label: 'Google 自动驾驶' },
+  { url: 'https://news.google.com/rss/search?q=AI+semiconductor+artificial+intelligence+chip+LLM&hl=en-US&gl=US&ceid=US:en', label: 'Google 英文AI' },
+  // 英文科技媒体
+  { url: 'https://techcrunch.com/feed/', label: 'TechCrunch' },
+  { url: 'https://www.theverge.com/rss/index.xml', label: 'The Verge' },
+  { url: 'https://feeds.arstechnica.com/arstechnica/index', label: 'Ars Technica' },
 ];
 
 
@@ -1427,10 +1440,13 @@ async function runRealNewsCycle(forceRefresh) {
     }
   }
   const allNews = await fetchAllRealNews();
-  if (allNews.length === 0) { runFallbackSim(); return; }
+  if (allNews.length === 0) { runFallbackSim(10); return; }
   saveNewsCache(allNews);
   allNews.forEach(function(news) { RENDERED_NEWS_TITLES.add(news.title); applyRealNews(news); });
   renderNewsTimeline();
+  // 如果真实新闻太少，补充模拟数据到至少20条
+  var realCount = $('#newsCards').querySelectorAll('.news-card').length;
+  if (realCount < 20) runFallbackSim(20 - realCount);
   refreshAll();
 }
 
@@ -1458,16 +1474,43 @@ async function refreshNewsInBackground() {
   } catch (e) {}
 }
 
-function runFallbackSim() {
-  var item = industryData[Math.floor(Math.random() * industryData.length)];
-  var impact = +(0.2 + Math.random() * 0.3).toFixed(1);
-  item.newsFactors.push({ date: new Date().toISOString().slice(0, 10), event: '[行业动态] ' + item.name + '赛道持续活跃', impact: impact });
-  if (item.newsFactors.length > 10) item.newsFactors = item.newsFactors.slice(-10);
-  var ni = item.newsFactors.reduce(function(s, nf) { return s + nf.impact; }, 0);
-  item.scarcity = Math.min(10, Math.max(1, +(9.0 + ni * 0.5).toFixed(1)));
-  item.value = Math.min(10, Math.max(1, +(9.0 + ni * 0.3).toFixed(1)));
-  item.composite = +(item.scarcity * 0.4 + item.value * 0.35 + item.barrier * 0.25).toFixed(1);
-  addNewsCard('[行业动态] ' + item.name + '赛道持续活跃', '行业动态', new Date().toISOString().slice(0, 10), [item.id], impact, '', []);
+function runFallbackSim(count) {
+  count = count || 5;
+  var used = new Set();
+  var cards = $('#newsCards').querySelectorAll('.news-card');
+  if (cards.length >= 30) return; // 已有足够新闻，不补充模拟数据
+
+  for (var k = 0; k < count; k++) {
+    var item;
+    var tries = 0;
+    do { item = industryData[Math.floor(Math.random() * industryData.length)]; tries++; }
+    while (used.has(item.id) && tries < 20);
+    used.add(item.id);
+
+    var pastDays = Math.floor(Math.random() * 7);
+    var newsDate = new Date(Date.now() - pastDays * 86400000).toISOString().slice(0, 10);
+    var events = [
+      item.name + '赛道融资活跃，多家头部机构加码布局',
+      item.name + '技术突破引发市场关注，商业化落地加速',
+      '行业报告：' + item.name + '市场规模预计年增超40%',
+      '多家' + item.name + '企业发布新品，竞争格局持续演变',
+      item.name + '赛道政策利好频出，产业链加速完善',
+    ];
+    var title = events[Math.floor(Math.random() * events.length)];
+    var impact = +(0.1 + Math.random() * 0.4).toFixed(1);
+
+    item.newsFactors.push({ date: newsDate, event: '[行业动态] ' + title, impact: impact });
+    if (item.newsFactors.length > 10) item.newsFactors = item.newsFactors.slice(-10);
+    var ni = item.newsFactors.reduce(function(s, nf) { return s + nf.impact; }, 0);
+    item.scarcity = Math.min(10, Math.max(1, +(9.0 + ni * 0.5).toFixed(1)));
+    item.value = Math.min(10, Math.max(1, +(9.0 + ni * 0.3).toFixed(1)));
+    item.composite = +(item.scarcity * 0.4 + item.value * 0.35 + item.barrier * 0.25).toFixed(1);
+
+    var companies = item.companies.slice(0, 2).map(function(c) {
+      return { name: c.name, ticker: c.ticker, country: c.country };
+    });
+    addNewsCard(title, '行业动态', newsDate, [item.id], impact, '', companies);
+  }
   renderNewsTimeline();
   refreshAll();
 }
