@@ -29,8 +29,9 @@ const industryData = [
     ],
     newsFactors: [
       { date: "2026-06", event: "NVIDIA B300 发布，性能提升 4 倍", impact: 0.3 },
-      { date: "2026-05", event: "美国对华芯片出口管制升级", impact: -0.2 }
-    ]
+      { date: "2026-05", event: "美国对华芯片出口管制升级", impact: -0.2 },
+      { name: "Intel Gaudi", country: "🇺🇸", ticker: "INTC", marketCap: 155, capLabel: "市值 ¥11,000亿", note: "Gaudi 3 AI加速器" },
+      { name: "Graphcore", country: "🇬🇧", ticker: null, marketCap: null, capLabel: "估值 ¥200亿", note: "IPU智能处理器" }]
   },
   {
     id: "chip-manufacturing",
@@ -53,8 +54,12 @@ const industryData = [
     ],
     newsFactors: [
       { date: "2026-06", event: "台积电 3nm 产能满载至 2027", impact: 0.2 },
-      { date: "2026-04", event: "ASML High-NA EUV 交付加速", impact: 0.1 }
-    ]
+      { date: "2026-04", event: "ASML High-NA EUV 交付加速", impact: 0.1 },
+      { name: "格罗方德 GF", country: "🇺🇸", ticker: "GFS", marketCap: 28, capLabel: "市值 ¥2,000亿", note: "成熟制程代工" },
+      { name: "联电 UMC", country: "🇹🇼", ticker: "UMC", marketCap: 20, capLabel: "市值 ¥1,450亿", note: "28nm+成熟制程" },
+      { name: "华虹半导体", country: "🇨🇳", ticker: "688347.SS", marketCap: 12, capLabel: "市值 ¥870亿", note: "特色工艺代工" },
+      { name: "东京电子 TEL", country: "🇯🇵", ticker: "8035.T", marketCap: 85, capLabel: "市值 ¥6,200亿", note: "半导体设备巨头" },
+      { name: "应用材料 AMAT", country: "🇺🇸", ticker: "AMAT", marketCap: 150, capLabel: "市值 ¥11,000亿", note: "沉积/刻蚀设备" }]
   },
   {
     id: "computing-infra",
@@ -77,8 +82,11 @@ const industryData = [
       { name: "Equinix", country: "🇺🇸", ticker: "EQIX", marketCap: 88, capLabel: "市值 ¥6,380亿", note: "全球数据中心REIT" }
     ],
     newsFactors: [
-      { date: "2026-05", event: "微软/OpenAI 千亿美元数据中心计划", impact: 0.4 }
-    ]
+      { date: "2026-05", event: "微软/OpenAI 千亿美元数据中心计划", impact: 0.4 },
+      { name: "Oracle Cloud", country: "🇺🇸", ticker: "ORCL", marketCap: 380, capLabel: "市值 ¥27,600亿", note: "OCI AI 集群" },
+      { name: "CoreWeave", country: "🇺🇸", ticker: "CRWV", marketCap: 25, capLabel: "市值 ¥1,800亿", note: "GPU云专业服务商" },
+      { name: "Digital Realty", country: "🇺🇸", ticker: "DLR", marketCap: 55, capLabel: "市值 ¥4,000亿", note: "全球数据中心REIT" },
+      { name: "浪潮信息", country: "🇨🇳", ticker: "000977.SZ", marketCap: 10, capLabel: "市值 ¥725亿", note: "AI服务器龙头" }]
   },
   {
     id: "data-labeling",
@@ -100,8 +108,12 @@ const industryData = [
       { name: "Labelbox", country: "🇺🇸", ticker: null, marketCap: null, capLabel: "估值 ¥90亿", note: "数据标注平台" }
     ],
     newsFactors: [
-      { date: "2026-03", event: "Scale AI 获 Meta/Amazon 追加投资", impact: 0.2 }
-    ]
+      { date: "2026-03", event: "Scale AI 获 Meta/Amazon 追加投资", impact: 0.2 },
+      { name: "Scale AI", country: "🇺🇸", ticker: null, marketCap: null, capLabel: "估值 ¥1,000亿", note: "数据标注独角兽" },
+      { name: "Labelbox", country: "🇺🇸", ticker: null, marketCap: null, capLabel: "估值 ¥70亿", note: "企业级标注平台" },
+      { name: "海天瑞声", country: "🇨🇳", ticker: "688787.SS", marketCap: 5, capLabel: "市值 ¥360亿", note: "AI训练数据集" },
+      { name: "Appen", country: "🇦🇺", ticker: "APX.AX", marketCap: 3, capLabel: "市值 ¥220亿", note: "AI数据服务" },
+      { name: "Snorkel AI", country: "🇺🇸", ticker: null, marketCap: null, capLabel: "估值 ¥120亿", note: "程序化数据标注" }]
   },
   {
     id: "synthetic-data",
@@ -123,8 +135,12 @@ const industryData = [
       { name: "NVIDIA Omniverse", country: "🇺🇸", ticker: "NVDA", marketCap: 5200, capLabel: "市值 ¥377,000亿", note: "3D合成数据平台" }
     ],
     newsFactors: [
-      { date: "2026-04", event: "Gartner 预测 2027 年合成数据将超真实数据", impact: 0.3 }
-    ]
+      { date: "2026-04", event: "Gartner 预测 2027 年合成数据将超真实数据", impact: 0.3 },
+      { name: "Mostly AI", country: "🇦🇹", ticker: null, marketCap: null, capLabel: "估值 ¥30亿", note: "结构化合成数据" },
+      { name: "Hazy", country: "🇬🇧", ticker: null, marketCap: null, capLabel: "估值 ¥20亿", note: "隐私安全合成数据" },
+      { name: "Parallel Domain", country: "🇺🇸", ticker: null, marketCap: null, capLabel: "估值 ¥40亿", note: "自动驾驶仿真数据" },
+      { name: "Sky Engine AI", country: "🇬🇧", ticker: null, marketCap: null, capLabel: "估值 ¥50亿", note: "合成视觉数据" },
+      { name: "Datagen", country: "🇮🇱", ticker: null, marketCap: null, capLabel: "估值 ¥80亿", note: "3D人体合成数据" }]
   },
 
   // ============ 中游 · 技术层 ============
@@ -152,8 +168,9 @@ const industryData = [
     ],
     newsFactors: [
       { date: "2026-06", event: "OpenAI 营收突破 300 亿美元", impact: 0.3 },
-      { date: "2026-05", event: "DeepSeek 登顶全球开源模型榜", impact: 0.2 }
-    ]
+      { date: "2026-05", event: "DeepSeek 登顶全球开源模型榜", impact: 0.2 },
+      { name: "智谱AI", country: "🇨🇳", ticker: null, marketCap: null, capLabel: "估值 ¥300亿", note: "GLM系列大模型" },
+      { name: "月之暗面", country: "🇨🇳", ticker: null, marketCap: null, capLabel: "估值 ¥250亿", note: "Kimi长文本助手" }]
   },
   {
     id: "multimodal",
@@ -176,8 +193,11 @@ const industryData = [
       { name: "生数科技", country: "🇨🇳", ticker: null, marketCap: null, capLabel: "估值 ¥90亿", note: "Vidu视频大模型" }
     ],
     newsFactors: [
-      { date: "2026-06", event: "Sora Pro 发布，支持 4K 长视频", impact: 0.3 }
-    ]
+      { date: "2026-06", event: "Sora Pro 发布，支持 4K 长视频", impact: 0.3 },
+      { name: "Adobe", country: "🇺🇸", ticker: "ADBE", marketCap: 220, capLabel: "市值 ¥16,000亿", note: "Firefly AI创意套件" },
+      { name: "商汤科技", country: "🇨🇳", ticker: "0020.HK", marketCap: 12, capLabel: "市值 ¥870亿", note: "日日新大模型" },
+      { name: "Stability AI", country: "🇬🇧", ticker: null, marketCap: null, capLabel: "估值 ¥80亿", note: "Stable Diffusion" },
+      { name: "字节跳动", country: "🇨🇳", ticker: null, marketCap: null, capLabel: "估值 ¥20,000亿", note: "豆包/即梦AI" }]
   },
   {
     id: "ai-framework",
@@ -200,8 +220,11 @@ const industryData = [
       { name: "潞晨科技", country: "🇨🇳", ticker: null, marketCap: null, capLabel: "未上市", note: "Colossal-AI 分布式训练" }
     ],
     newsFactors: [
-      { date: "2026-04", event: "PyTorch 3.0 发布，性能大幅提升", impact: 0.1 }
-    ]
+      { date: "2026-04", event: "PyTorch 3.0 发布，性能大幅提升", impact: 0.1 },
+      { name: "Anthropic MCP", country: "🇺🇸", ticker: null, marketCap: null, capLabel: "非上市", note: "Model Context Protocol" },
+      { name: "Weights & Biases", country: "🇺🇸", ticker: null, marketCap: null, capLabel: "估值 ¥100亿", note: "ML实验追踪平台" },
+      { name: "Replicate", country: "🇺🇸", ticker: null, marketCap: null, capLabel: "估值 ¥50亿", note: "模型部署API平台" },
+      { name: "Gradio", country: "🇺🇸", ticker: null, marketCap: null, capLabel: "被HuggingFace收购", note: "ML演示框架" }]
   },
   {
     id: "vector-db",
@@ -222,7 +245,12 @@ const industryData = [
       { name: "Qdrant", country: "🇩🇪", ticker: null, marketCap: null, capLabel: "未上市", note: "Rust向量数据库" },
       { name: "Chroma", country: "🇺🇸", ticker: null, marketCap: null, capLabel: "估值 ¥40亿", note: "轻量级向量DB" }
     ],
-    newsFactors: []
+    newsFactors: [,
+      { name: "Zilliz", country: "🇨🇳", ticker: null, marketCap: null, capLabel: "估值 ¥150亿", note: "Milvus企业版" },
+      { name: "Elastic", country: "🇺🇸", ticker: "ESTC", marketCap: 12, capLabel: "市值 ¥870亿", note: "ES向量检索" },
+      { name: "DataStax", country: "🇺🇸", ticker: null, marketCap: null, capLabel: "估值 ¥200亿", note: "Astra向量DB" },
+      { name: "Redis", country: "🇺🇸", ticker: null, marketCap: null, capLabel: "估值 ¥300亿", note: "Redis向量搜索" },
+      { name: "Marqo", country: "🇦🇺", ticker: null, marketCap: null, capLabel: "估值 ¥30亿", note: "端到端向量搜索" }]
   },
   {
     id: "mlops",
@@ -244,8 +272,12 @@ const industryData = [
       { name: "ClearML", country: "🇮🇱", ticker: null, marketCap: null, capLabel: "未上市", note: "开源MLOps" }
     ],
     newsFactors: [
-      { date: "2026-05", event: "Databricks 估值破 600 亿美元", impact: 0.2 }
-    ]
+      { date: "2026-05", event: "Databricks 估值破 600 亿美元", impact: 0.2 },
+      { name: "Databricks", country: "🇺🇸", ticker: null, marketCap: null, capLabel: "估值 ¥4,300亿", note: "数据+AI平台" },
+      { name: "Dataiku", country: "🇫🇷", ticker: null, marketCap: null, capLabel: "估值 ¥300亿", note: "企业AI平台" },
+      { name: "Anyscale", country: "🇺🇸", ticker: null, marketCap: null, capLabel: "估值 ¥100亿", note: "Ray分布式框架" },
+      { name: "Domino Data Lab", country: "🇺🇸", ticker: null, marketCap: null, capLabel: "估值 ¥150亿", note: "MLOps企业平台" },
+      { name: "BentoML", country: "🇺🇸", ticker: null, marketCap: null, capLabel: "估值 ¥40亿", note: "AI模型部署" }]
   },
 
   // ============ 下游 · 应用层 ============
@@ -271,8 +303,11 @@ const industryData = [
     ],
     newsFactors: [
       { date: "2026-06", event: "AI Agent 赛道年度融资超 500 亿美元", impact: 0.5 },
-      { date: "2026-05", event: "Salesforce 全面集成 AI Agent", impact: 0.3 }
-    ]
+      { date: "2026-05", event: "Salesforce 全面集成 AI Agent", impact: 0.3 },
+      { name: "Salesforce", country: "🇺🇸", ticker: "CRM", marketCap: 280, capLabel: "市值 ¥20,300亿", note: "Agentforce平台" },
+      { name: "ServiceNow", country: "🇺🇸", ticker: "NOW", marketCap: 200, capLabel: "市值 ¥14,500亿", note: "Now Assist AI" },
+      { name: "UiPath", country: "🇺🇸", ticker: "PATH", marketCap: 10, capLabel: "市值 ¥725亿", note: "企业自动化Agent" },
+      { name: "钉钉", country: "🇨🇳", ticker: "BABA", marketCap: 320, capLabel: "市值 ¥23,000亿", note: "钉钉AI助手" }]
   },
   {
     id: "ai-coding",
@@ -292,11 +327,13 @@ const industryData = [
       { name: "Codex (OpenAI)", country: "🇺🇸", ticker: null, marketCap: null, capLabel: "估值 ¥36,000亿", note: "终端AI编程助手" },
       { name: "Replit", country: "🇺🇸", ticker: null, marketCap: null, capLabel: "估值 ¥360亿", note: "云端AI开发环境" },
       { name: "通义灵码", country: "🇨🇳", ticker: "BABA", marketCap: 320, capLabel: "市值 ¥23,000亿", note: "阿里AI编程助手" },
-      { name: "文心快码", country: "🇨🇳", ticker: "BIDU", marketCap: 35, capLabel: "市值 ¥2,540亿", note: "百度AI编程助手" }
-    ],
+      { name: "文心快码", country: "🇨🇳", ticker: "BIDU", marketCap: 35, capLabel: "市值 ¥2,540亿", note: "百度AI编程助手" },
+      { name: "Tabnine", country: "🇮🇱", ticker: null, marketCap: null, capLabel: "估值 ¥70亿", note: "AI代码补全" }],
     newsFactors: [
-      { date: "2026-06", event: "Cursor 估值突破 100 亿美元", impact: 0.3 }
-    ]
+      { date: "2026-06", event: "Cursor 估值突破 100 亿美元", impact: 0.3 },
+      { name: "Anysphere (Cursor)", country: "🇺🇸", ticker: null, marketCap: null, capLabel: "估值 ¥200亿", note: "AI原生IDE" },
+      { name: "Replit", country: "🇺🇸", ticker: null, marketCap: null, capLabel: "估值 ¥120亿", note: "云端AI编程" },
+      { name: "Codeium", country: "🇺🇸", ticker: null, marketCap: null, capLabel: "估值 ¥90亿", note: "企业级AI编程" }]
   },
   {
     id: "ai-healthcare",
@@ -319,8 +356,11 @@ const industryData = [
       { name: "医渡科技", country: "🇨🇳", ticker: "2158.HK", marketCap: 1.2, capLabel: "市值 ¥90亿", note: "医疗AI大数据" }
     ],
     newsFactors: [
-      { date: "2026-05", event: "FDA 批准首款 AI 独立诊断系统", impact: 0.4 }
-    ]
+      { date: "2026-05", event: "FDA 批准首款 AI 独立诊断系统", impact: 0.4 },
+      { name: "Tempus AI", country: "🇺🇸", ticker: "TEM", marketCap: 10, capLabel: "市值 ¥725亿", note: "AI精准医疗" },
+      { name: "晶泰科技", country: "🇨🇳", ticker: "2228.HK", marketCap: 6, capLabel: "市值 ¥435亿", note: "AI药物研发" },
+      { name: "英矽智能", country: "🇨🇳", ticker: null, marketCap: null, capLabel: "估值 ¥150亿", note: "AI制药平台" },
+      { name: "Butterfly Network", country: "🇺🇸", ticker: "BFLY", marketCap: 2, capLabel: "市值 ¥145亿", note: "AI便携超声" }]
   },
   {
     id: "ai-finance",
@@ -342,8 +382,12 @@ const industryData = [
       { name: "Upstart", country: "🇺🇸", ticker: "UPST", marketCap: 4.5, capLabel: "市值 ¥330亿", note: "AI信贷决策" }
     ],
     newsFactors: [
-      { date: "2026-06", event: "中国 AI + 金融监管沙盒扩大试点", impact: 0.1 }
-    ]
+      { date: "2026-06", event: "中国 AI + 金融监管沙盒扩大试点", impact: 0.1 },
+      { name: "蚂蚁集团", country: "🇨🇳", ticker: null, marketCap: null, capLabel: "估值 ¥5,000亿", note: "AI金融风控" },
+      { name: "Affirm", country: "🇺🇸", ticker: "AFRM", marketCap: 18, capLabel: "市值 ¥1,300亿", note: "AI信贷评估" },
+      { name: "同花顺", country: "🇨🇳", ticker: "300033.SZ", marketCap: 15, capLabel: "市值 ¥1,090亿", note: "AI投顾/量化" },
+      { name: "东方财富", country: "🇨🇳", ticker: "300059.SZ", marketCap: 42, capLabel: "市值 ¥3,050亿", note: "AI智能投研" },
+      { name: "Upstart", country: "🇺🇸", ticker: "UPST", marketCap: 5, capLabel: "市值 ¥360亿", note: "AI信贷决策" }]
   },
   {
     id: "ai-education",
@@ -365,8 +409,12 @@ const industryData = [
       { name: "科大讯飞", country: "🇨🇳", ticker: "002230.SZ", marketCap: 22, capLabel: "市值 ¥1,600亿", note: "AI 教育+语音" }
     ],
     newsFactors: [
-      { date: "2026-04", event: "中国 AI+教育政策支持力度加大", impact: 0.2 }
-    ]
+      { date: "2026-04", event: "中国 AI+教育政策支持力度加大", impact: 0.2 },
+      { name: "多邻国 Duolingo", country: "🇺🇸", ticker: "DUOL", marketCap: 15, capLabel: "市值 ¥1,090亿", note: "AI语言学习" },
+      { name: "Chegg", country: "🇺🇸", ticker: "CHGG", marketCap: 3, capLabel: "市值 ¥220亿", note: "AI教育辅导" },
+      { name: "作业帮", country: "🇨🇳", ticker: null, marketCap: null, capLabel: "估值 ¥400亿", note: "AI解题/辅导" },
+      { name: "猿辅导", country: "🇨🇳", ticker: null, marketCap: null, capLabel: "估值 ¥500亿", note: "AI自适应学习" },
+      { name: "Coursera", country: "🇺🇸", ticker: "COUR", marketCap: 4, capLabel: "市值 ¥290亿", note: "AI课程平台" }]
   },
   {
     id: "ai-content",
@@ -389,8 +437,11 @@ const industryData = [
       { name: "LiblibAI", country: "🇨🇳", ticker: null, marketCap: null, capLabel: "估值 ¥60亿", note: "AI绘画社区" }
     ],
     newsFactors: [
-      { date: "2026-05", event: "Midjourney V8 引发设计行业震动", impact: 0.2 }
-    ]
+      { date: "2026-05", event: "Midjourney V8 引发设计行业震动", impact: 0.2 },
+      { name: "Canva", country: "🇦🇺", ticker: null, marketCap: null, capLabel: "估值 ¥2,500亿", note: "AI设计平台" },
+      { name: "Jasper", country: "🇺🇸", ticker: null, marketCap: null, capLabel: "估值 ¥100亿", note: "营销内容AI" },
+      { name: "美图", country: "🇨🇳", ticker: "1357.HK", marketCap: 8, capLabel: "市值 ¥580亿", note: "AI影像/设计" },
+      { name: "Suno", country: "🇺🇸", ticker: null, marketCap: null, capLabel: "估值 ¥50亿", note: "AI音乐生成" }]
   },
   {
     id: "embodied-ai",
@@ -414,8 +465,11 @@ const industryData = [
     ],
     newsFactors: [
       { date: "2026-06", event: "特斯拉 Optimus 进入工厂实测", impact: 0.5 },
-      { date: "2026-05", event: "Figure AI 获微软/OpenAI 追加投资", impact: 0.4 }
-    ]
+      { date: "2026-05", event: "Figure AI 获微软/OpenAI 追加投资", impact: 0.4 },
+      { name: "宇树科技", country: "🇨🇳", ticker: null, marketCap: null, capLabel: "估值 ¥150亿", note: "四足/人形机器人" },
+      { name: "傅利叶智能", country: "🇨🇳", ticker: null, marketCap: null, capLabel: "估值 ¥80亿", note: "通用人形机器人" },
+      { name: "Boston Dynamics", country: "🇺🇸", ticker: null, marketCap: null, capLabel: "估值 ¥200亿", note: "Atlas 人形机器人" },
+      { name: "Apptronik", country: "🇺🇸", ticker: null, marketCap: null, capLabel: "估值 ¥60亿", note: "Apollo 人形机器人" }]
   },
   {
     id: "autonomous-driving",
@@ -439,8 +493,11 @@ const industryData = [
     ],
     newsFactors: [
       { date: "2026-06", event: "Waymo 周订单突破 20 万单", impact: 0.3 },
-      { date: "2026-05", event: "中国 Robotaxi 多地获准全无人运营", impact: 0.3 }
-    ]
+      { date: "2026-05", event: "中国 Robotaxi 多地获准全无人运营", impact: 0.3 },
+      { name: "Cruise (GM)", country: "🇺🇸", ticker: "GM", marketCap: 45, capLabel: "市值 ¥3,300亿", note: "Robotaxi 美国前三" },
+      { name: "Aurora", country: "🇺🇸", ticker: "AUR", marketCap: 6, capLabel: "市值 ¥435亿", note: "自动驾驶卡车" },
+      { name: "地平线", country: "🇨🇳", ticker: null, marketCap: null, capLabel: "估值 ¥600亿", note: "征程系列智驾芯片" },
+      { name: "蔚来", country: "🇨🇳", ticker: "NIO", marketCap: 12, capLabel: "市值 ¥870亿", note: "NAD 全栈智驾" }]
   }
 ];
 
