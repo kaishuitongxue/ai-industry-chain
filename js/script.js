@@ -1988,7 +1988,7 @@ setInterval(() => { try { refreshAllStocks(); } catch(e) {} }, 3 * 60 * 1000);
 const elapsed = (performance.now() - perfStart).toFixed(0);
 console.log(`🧠 AI全产业链图谱 | 18赛道 · ${industryData.reduce((s,i)=>s+i.companies.length,0)}家公司 | 首屏 ${elapsed}ms`);
 }
-document.addEventListener('DOMContentLoaded', init);
+if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", init); } else { init(); }
 function updateFilterTags(activeBtn) {
 $$('.news-layer-tag').forEach(t => t.classList.remove('active'));
 if (activeBtn) activeBtn.classList.add('active');
